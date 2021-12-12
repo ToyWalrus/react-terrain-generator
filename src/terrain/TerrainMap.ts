@@ -8,33 +8,33 @@ export interface TerrainPoint {
 }
 
 export default class TerrainMap {
-  map: TerrainPoint[];
-  height: number;
-  width: number;
+  map: TerrainPoint[][];
 
   constructor(elevationMap?: number[][], temperatureMap?: number[][], moistureMap?: number[][]) {
     this.map = [];
-    this.width = elevationMap ? elevationMap.length : 0;
-    this.height = elevationMap && elevationMap.length > 0 ? elevationMap[0].length : 0;
 
-    const halfH = this.height / 2;
-    const halfW = this.width / 2;
+    const width = elevationMap ? elevationMap.length : 0;
+    const height = elevationMap && elevationMap.length > 0 ? elevationMap[0].length : 0;
+
+    const halfH = height / 2;
+    const halfW = width / 2;
 
     if (
       elevationMap &&
       temperatureMap &&
       moistureMap &&
-      (this.width !== temperatureMap.length ||
-        this.width !== moistureMap.length ||
-        this.height !== temperatureMap[0].length ||
-        this.height !== moistureMap[0].length)
+      (width !== temperatureMap.length ||
+        width !== moistureMap.length ||
+        height !== temperatureMap[0].length ||
+        height !== moistureMap[0].length)
     ) {
       throw new Error('Given arrays must be of same dimensions for Terrain map');
     }
 
     if (elevationMap) {
-      for (let col = 0; col < this.width; ++col) {
-        for (let row = 0; row < this.height; ++row) {
+      for (let col = 0; col < width; ++col) {
+        this.map.push([]);
+        for (let row = 0; row < height; ++row) {
           const x = col - halfW;
           const y = elevationMap[col][row];
           const z = row - halfH;
@@ -46,13 +46,17 @@ export default class TerrainMap {
             biome = getBiome(y, temperatureMap[col][row], moistureMap[col][row]);
           }
 
-          this.map.push({ point, biome });
+          this.map[col].push({ point, biome });
         }
       }
     }
   }
 
-  getPoint(x: number, y: number): TerrainPoint {
-    return this.map[x * this.width + y];
+  get height() {
+    return this.map.length > 0 ? this.map[0].length : 0;
+  }
+
+  get width() {
+    return this.map.length;
   }
 }

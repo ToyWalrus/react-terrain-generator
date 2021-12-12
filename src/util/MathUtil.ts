@@ -55,9 +55,9 @@ const _getGradientColor = (gradientStart: Color, gradientEnd: Color, val: number
 
 const _getMapColor = (colors: Color[], cutoffs: number[], val: number): Color => {
   for (let x = 0; x < cutoffs.length; ++x) {
-    if (x == 0) {
+    if (x === 0) {
       if (val < cutoffs[0] && val >= 0) return colors[x];
-    } else if (x == cutoffs.length - 1) {
+    } else if (x === cutoffs.length - 1) {
       if (val < 1 && val >= cutoffs[x]) return colors[x];
     } else {
       if (val < cutoffs[x] && val >= cutoffs[x - 1]) return colors[x];

@@ -91,6 +91,8 @@ export default class NoiseGenerator {
     const frequency = 1 / period;
 
     for (let x = 0; x < width; ++x) {
+      smoothNoise.push([]);
+
       // Horizontal indices
       const hor1 = Math.floor(x / period) * period;
       const hor2 = (hor1 + period) % width; // Wrap by the width
@@ -107,7 +109,7 @@ export default class NoiseGenerator {
         const bottom = interpolate(this.whiteNoise[hor1][vert2], this.whiteNoise[hor2][vert2], horizontalBlend);
 
         // Final blend
-        smoothNoise[x][y] = interpolate(top, bottom, verticalBlend);
+        smoothNoise[x].push(interpolate(top, bottom, verticalBlend));
       }
     }
 
@@ -146,7 +148,15 @@ export default class NoiseGenerator {
       totalAmplitude += amplitude;
 
       for (let x = 0; x < width; ++x) {
+        if (x === perlinNoise.length) {
+          perlinNoise.push([]);
+        }
+
         for (let y = 0; y < height; ++y) {
+          if (y === perlinNoise[x].length) {
+            perlinNoise[x].push(0);
+          }
+
           perlinNoise[x][y] += smoothNoise[octave][x][y] * amplitude;
         }
       }

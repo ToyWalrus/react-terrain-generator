@@ -95,7 +95,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
               return Biome.Plains;
             case Moisture.Average:
               return Biome.Grassland;
-            case Moisture.Average:
+            case Moisture.Moist:
               return Biome.Forest;
             default:
               return Biome.RainForest;
@@ -106,7 +106,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
             case Moisture.Dry:
               return Biome.Desert;
             case Moisture.Average:
-            case Moisture.Average:
+            case Moisture.Moist:
               return Biome.Forest;
             default:
               return Biome.RainForest;
@@ -119,7 +119,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
               return Biome.Desert;
             case Moisture.Average:
               return Biome.TemperateDesert;
-            case Moisture.Average:
+            case Moisture.Moist:
               return Biome.Shrubland;
             default:
               return Biome.Marsh;
@@ -157,7 +157,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
               return Biome.Plains;
             case Moisture.Average:
               return Biome.Grassland;
-            case Moisture.Average:
+            case Moisture.Moist:
               return Biome.Shrubland;
             default:
               return Biome.Marsh;
@@ -170,7 +170,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
               return Biome.Desert;
             case Moisture.Average:
               return Biome.Grassland;
-            case Moisture.Average:
+            case Moisture.Moist:
               return Biome.Shrubland;
             default:
               return Biome.Marsh;
@@ -218,7 +218,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
             case Moisture.Dry:
               return Biome.Desert;
             case Moisture.Average:
-            case Moisture.Average:
+            case Moisture.Moist:
               return Biome.Forest;
             default:
               return Biome.RainForest;
