@@ -10,7 +10,7 @@ interface ICanvasRendererProps {
 
 export default class CanvasRenderer extends React.Component<ICanvasRendererProps> {
   renderer: WebGLRenderer;
-  mount?: HTMLElement;
+  htmlEl?: HTMLElement;
   animCancelValue?: number;
 
   constructor(props: ICanvasRendererProps) {
@@ -20,7 +20,7 @@ export default class CanvasRenderer extends React.Component<ICanvasRendererProps
   }
 
   componentDidMount() {
-    this.mount?.appendChild(this.renderer.domElement);
+    this.htmlEl?.appendChild(this.renderer.domElement);
     this._startAnimation(this.props.scene, this.props.camera);
   }
 
@@ -31,8 +31,10 @@ export default class CanvasRenderer extends React.Component<ICanvasRendererProps
       oldProps.camera !== this.props.camera ||
       oldProps.scene !== this.props.scene
     ) {
-      console.log('restarting aimation');
-      cancelAnimationFrame(this.animCancelValue!);
+      if (this.animCancelValue) {
+        console.log('restarting aimation');
+        cancelAnimationFrame(this.animCancelValue);
+      }
       this.renderer.setSize(this.props.width, this.props.height);
       this._startAnimation(this.props.scene, this.props.camera);
     }
@@ -54,7 +56,7 @@ export default class CanvasRenderer extends React.Component<ICanvasRendererProps
         className="canvas-renderer"
         ref={el => {
           if (el) {
-            this.mount = el;
+            this.htmlEl = el;
           }
         }}
       />

@@ -289,4 +289,4 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
   }
 };
 
-export default { getBiome };
+export { getBiome };
