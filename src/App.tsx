@@ -1,19 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import CanvasRenderer from './components/CanvasRenderer';
-import { PerspectiveCamera, Scene, BoxGeometry, MeshBasicMaterial, Mesh } from 'three';
+import { useEffect, useState } from 'react';
+import { Scene } from 'three';
 import NoiseGenerator from './util/NoiseGenerator';
 import Random from 'random';
 import PlaneDrawerSettings from './util/PlaneDrawerSettings';
 import PlaneDrawer from './components/PlaneDrawer';
 import SettingsEditor from './components/SettingsEditor';
 import TerrainMap from './terrain/TerrainMap';
+import CameraController from './components/CameraControls';
+import StaticClock from './util/StaticClock';
+
+import './App.css';
 
 const App = () => {
   const {
     settings,
-    cam,
     scene,
     terrainMap,
     updateSettings,
@@ -22,6 +22,7 @@ const App = () => {
     setCanvasHeight,
     setCanvasWidth,
     setKeepSeed,
+    clock,
   } = useAppContext();
 
   return (
@@ -34,15 +35,19 @@ const App = () => {
         }}
       />
 
-      <PlaneDrawer
-        camera={cam}
-        scene={scene}
-        canvasHeight={canvasHeight}
-        canvasWidth={canvasWidth}
-        terrainMap={terrainMap}
-        wireframeOnly={settings.wireframe}
-        autoRotate={settings.autoRotate}
-      />
+      <CameraController canvasHeight={canvasHeight} canvasWidth={canvasWidth} clock={clock}>
+        {camera => (
+          <PlaneDrawer
+            camera={camera}
+            scene={scene}
+            canvasHeight={canvasHeight}
+            canvasWidth={canvasWidth}
+            terrainMap={terrainMap}
+            wireframeOnly={settings.wireframe}
+            autoRotate={settings.autoRotate}
+          />
+        )}
+      </CameraController>
     </div>
   );
 };
@@ -55,9 +60,11 @@ const useAppContext = () => {
   const [keepSeed, setKeepSeed] = useState(false);
 
   const [scene] = useState(new Scene());
-  const [cam] = useState(new PerspectiveCamera(75, canvasWidth / canvasHeight, 0.1, 1000));
+  const [clock] = useState(new StaticClock());
 
-  const [settings, updateSettings] = useState(new PlaneDrawerSettings({ arrHeight: 50, arrWidth: 50 }));
+  const [settings, updateSettings] = useState(
+    new PlaneDrawerSettings({ arrHeight: 50, arrWidth: 50 }),
+  );
 
   const [elevationSeed, setElevationSeed] = useState(getRandomSeed());
   const [temperatureSeed, setTemperatureSeed] = useState(getRandomSeed());
@@ -98,7 +105,6 @@ const useAppContext = () => {
   }, [elevationMap, temperatureMap, moistureMap]);
 
   return {
-    cam,
     scene,
     terrainMap,
     settings,
@@ -108,6 +114,7 @@ const useAppContext = () => {
     setCanvasHeight,
     setCanvasWidth,
     setKeepSeed,
+    clock,
   };
 };
 
