@@ -38,8 +38,7 @@ const App = () => {
         canvasHeight={canvasHeight}
         canvasWidth={canvasWidth}
         terrainMap={terrainMap}
-        wireframeOnly={settings.wireframe}
-        autoRotate={settings.autoRotate}
+        settings={settings}
       />
     </div>
   );
@@ -49,7 +48,7 @@ const useAppContext = () => {
   const getRandomSeed = () => Random.integer(1000000, 1000000000);
   const createNewCamera = () => {
     const cam = new PerspectiveCamera(50, canvasWidth / canvasHeight);
-    cam.position.set(0, 30, -50);
+    cam.position.set(0, 200, -100);
     return cam;
   };
   const createNewScene = () => {
@@ -64,7 +63,13 @@ const useAppContext = () => {
 
   const [keepSeed, setKeepSeed] = useState(false);
   const [settings, updateSettings] = useState(
-    new PlaneDrawerSettings({ arrHeight: 50, arrWidth: 50 }),
+    new PlaneDrawerSettings({
+      arrHeight: 50,
+      arrWidth: 50,
+      heightAmplify: 300,
+      wireframe: false,
+      autoRotate: true,
+    }),
   );
 
   const [elevationSeed, setElevationSeed] = useState(getRandomSeed());
@@ -97,9 +102,6 @@ const useAppContext = () => {
     settings.seed = moistureSeed;
     generator.changeSettings(settings);
     setMoistureMap(generator.generatePerlinNoise(settings.octaves));
-
-    settings.autoRotate = false;
-    settings.wireframe = false;
   }, [settings]);
 
   useEffect(() => {

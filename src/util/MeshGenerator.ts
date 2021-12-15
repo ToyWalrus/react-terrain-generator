@@ -6,13 +6,11 @@ import {
   Line,
   LineBasicMaterial,
   Mesh,
-  MeshBasicMaterial,
   MeshPhongMaterial,
   Vector3,
 } from 'three';
 import { biomeColor } from '../terrain/Biome';
 import TerrainMap from '../terrain/TerrainMap';
-import * as THREE from 'three';
 
 export interface IScaleSettings {
   scaleHeight: number;
@@ -24,19 +22,16 @@ export default class MeshGenerator {
    * @private
    */
   static _meshCenterPoint: Vector3 = new Vector3();
-  static wireframeColor: Color = new Color(12, 12, 12);
+  static wireframeColor: Color = new Color(0xababab);
   static get meshCenterPoint() {
     return this._meshCenterPoint;
   }
 
-  static generateMeshFor(
-    terrainMap: TerrainMap,
-    wireframeOnly: boolean = false,
-    scaleSettings?: IScaleSettings,
-  ) {
-    return wireframeOnly
-      ? this._genWireframe(terrainMap, scaleSettings)
-      : this._genQuads(terrainMap, scaleSettings);
+  static generateMeshFor(terrainMap: TerrainMap, scaleSettings?: IScaleSettings) {
+    return {
+      wireframe: this._genWireframe(terrainMap, scaleSettings),
+      mesh: this._genQuads(terrainMap, scaleSettings),
+    };
   }
 
   /**

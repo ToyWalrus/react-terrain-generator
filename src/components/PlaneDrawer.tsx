@@ -1,26 +1,15 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import {
-  BufferGeometry,
-  Camera,
-  HemisphereLight,
-  Line,
-  LineBasicMaterial,
-  Mesh,
-  Scene,
-  Vector3,
-} from 'three';
+import { useEffect } from 'react';
+import { Camera, HemisphereLight, Scene } from 'three';
 import TerrainMap from '../terrain/TerrainMap';
 import MeshGenerator from '../util/MeshGenerator';
+import PlaneDrawerSettings from '../util/PlaneDrawerSettings';
 import CanvasRenderer from './CanvasRenderer';
 
 interface IPlaneDrawerProps {
   scene: Scene;
   camera: Camera;
   terrainMap: TerrainMap;
-
-  wireframeOnly: boolean;
-  autoRotate: boolean;
-
+  settings: PlaneDrawerSettings;
   canvasWidth: number;
   canvasHeight: number;
 }
@@ -35,29 +24,32 @@ const PlaneDrawer = (props: IPlaneDrawerProps) => {
         camera={props.camera}
         width={props.canvasWidth}
         height={props.canvasHeight}
-        autoRotate={props.autoRotate}
+        autoRotate={props.settings.autoRotate}
         worldFocusPoint={MeshGenerator.meshCenterPoint}
       />
     </div>
   );
 };
 
-const usePlaneDrawerContext = ({ scene, terrainMap, wireframeOnly }: IPlaneDrawerProps) => {
+const usePlaneDrawerContext = ({ scene, terrainMap, settings }: IPlaneDrawerProps) => {
   const genMeshForScene = () => {
     scene.clear();
 
     scene.add(new HemisphereLight());
 
-    const result = MeshGenerator.generateMeshFor(terrainMap, wireframeOnly);
-    if (wireframeOnly) {
-      const lines = result as Line[];
-      lines.forEach(line => scene.add(line));
-    } else {
-      scene.add(result as Mesh);
+    const { wireframe, mesh } = MeshGenerator.generateMeshFor(terrainMap, {
+      scaleHeight: settings.heightAmplify,
+      scaleLengthAndWidth: settings.scaleSize,
+    });
+
+    wireframe.forEach(line => scene.add(line));
+
+    if (!settings.wireframe) {
+      scene.add(mesh);
     }
   };
 
-  useEffect(genMeshForScene, [terrainMap, wireframeOnly]);
+  useEffect(genMeshForScene, [terrainMap, settings, MeshGenerator.wireframeColor]);
 };
 
 export default PlaneDrawer;

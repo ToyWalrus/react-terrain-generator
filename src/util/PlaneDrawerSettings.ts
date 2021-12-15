@@ -10,9 +10,9 @@ export default class PlaneDrawerSettings extends Settings {
     super(settings);
 
     this.scaleSize = settings?.scaleSize || 3;
-    this.heightAmplify = settings?.heightAmplify || 10;
-    this.wireframe = settings?.wireframe || true;
-    this.autoRotate = settings?.autoRotate || true;
+    this.heightAmplify = settings?.heightAmplify || 100;
+    this.wireframe = settings?.wireframe === undefined ? true : settings.wireframe;
+    this.autoRotate = settings?.autoRotate === undefined ? true : settings.autoRotate;
   }
 
   set detailLevel(val: number) {
