@@ -97,6 +97,8 @@ const useAppContext = () => {
     settings.seed = moistureSeed;
     generator.changeSettings(settings);
     setMoistureMap(generator.generatePerlinNoise(settings.octaves));
+
+    settings.autoRotate = false;
   }, [settings]);
 
   useEffect(() => {
