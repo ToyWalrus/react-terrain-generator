@@ -99,6 +99,7 @@ const useAppContext = () => {
     setMoistureMap(generator.generatePerlinNoise(settings.octaves));
 
     settings.autoRotate = false;
+    settings.wireframe = false;
   }, [settings]);
 
   useEffect(() => {

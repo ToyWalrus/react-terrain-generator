@@ -19,7 +19,9 @@ enum Biome {
   Snow = 'Snow',
 }
 
-export const biomeColor = (biome: Biome): Color => {
+export const biomeColor = (biome?: Biome): Color => {
+  if (!biome) return new Color(0xfff);
+
   let r = 0;
   let g = 0;
   let b = 0;

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { BufferGeometry, Camera, Line, LineBasicMaterial, Scene, Vector3 } from 'three';
+import { BufferGeometry, Camera, Line, LineBasicMaterial, Mesh, Scene, Vector3 } from 'three';
 import TerrainMap from '../terrain/TerrainMap';
 import MeshGenerator from '../util/MeshGenerator';
 import CanvasRenderer from './CanvasRenderer';
@@ -27,45 +27,24 @@ const PlaneDrawer = (props: IPlaneDrawerProps) => {
         width={props.canvasWidth}
         height={props.canvasHeight}
         autoRotate={props.autoRotate}
-        worldFocusPoint={new Vector3()}
+        worldFocusPoint={MeshGenerator.meshCenterPoint}
       />
     </div>
   );
 };
 
-let isFirstRender = true;
+const usePlaneDrawerContext = ({ scene, terrainMap, wireframeOnly }: IPlaneDrawerProps) => {
+  const genMeshForScene = () => {
+    const result = MeshGenerator.generateMeshFor(terrainMap, wireframeOnly);
+    if (wireframeOnly) {
+      const lines = result as Line[];
+      lines.forEach(line => scene.add(line));
+    } else {
+      scene.add(result as Mesh);
+    }
+  };
 
-const usePlaneDrawerContext = ({ scene, terrainMap }: IPlaneDrawerProps) => {
-  // const wireframe = useRef(new Line());
-  const geometry = useMemo(() => new BufferGeometry(), []);
-  const getTerrainPoints = () => terrainMap.map.flatMap(points => points.map(({ point }) => point));
-
-  useEffect(() => {
-    isFirstRender = true;
-    // const wireframeMat = new LineBasicMaterial({ color: 0x3c4c5c });
-    // const planeGeometry = geometry.setFromPoints(getTerrainPoints());
-
-    // wireframe.current = new Line(planeGeometry, wireframeMat);
-    const lines = MeshGenerator.generateMeshFor(terrainMap);
-    lines.forEach(line => {
-      scene.add(line);
-    });
-  });
-
-  // useEffect(() => {
-  //   if (!isFirstRender) {
-  //     const { geometry } = wireframe.current;
-  //     const terrainPoints = getTerrainPoints();
-
-  //     geometry.setDrawRange(0, terrainPoints.length * 3);
-  //     geometry.setFromPoints(terrainPoints);
-
-  //     geometry.computeBoundingBox();
-  //     geometry.computeBoundingSphere();
-  //     geometry.attributes.position.needsUpdate = true;
-  //   }
-  //   isFirstRender = false;
-  // }, [terrainMap]);
+  useEffect(genMeshForScene, [terrainMap, wireframeOnly]);
 };
 
 export default PlaneDrawer;
