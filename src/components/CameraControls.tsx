@@ -11,22 +11,21 @@ interface ICameraControllerProps {
   children: (camera: Camera) => JSX.Element;
   canvasWidth: number;
   canvasHeight: number;
-  // potentially bounds?
-
   clock: StaticClock;
-
   zoomSpeed?: number;
   translationSpeed?: number;
   rotationSpeed?: number;
 }
+
+type MouseButton = 'left' | 'right';
 
 let prevMousePosition: { x: number; y: number } | undefined;
 
 const CameraController = (props: ICameraControllerProps) => {
   const {
     camera,
-    isDragging,
-    setDragging,
+    heldButton,
+    setHeldButton,
     moveHorizontal,
     moveVertical,
     zoomCamera,
@@ -41,26 +40,40 @@ const CameraController = (props: ICameraControllerProps) => {
   };
 
   const mouseUpEvent = () => {
-    setDragging(false);
+    setHeldButton(undefined);
     prevMousePosition = undefined;
   };
 
-  const mouseDownEvent = () => {
-    setDragging(true);
+  const mouseDownEvent = (e: React.MouseEvent) => {
+    switch (e.button) {
+      case 0:
+        setHeldButton('left');
+        break;
+      case 2:
+        setHeldButton('right');
+        break;
+      default:
+        return;
+    }
   };
 
   const mouseMoveEvent = (e: React.MouseEvent) => {
     const delta = props.clock.delta;
-    if (isDragging && prevMousePosition) {
+    if (heldButton && prevMousePosition) {
       const xDiff = e.clientX - prevMousePosition.x;
-      const yDiff = e.clientY - prevMousePosition.y;
+      const yDiff = prevMousePosition.y - e.clientY;
 
-      if (xDiff !== 0) {
-        moveHorizontal(xDiff, delta);
-      }
+      if (heldButton === 'left') {
+        if (xDiff !== 0) {
+          moveHorizontal(xDiff, delta);
+        }
 
-      if (yDiff !== 0) {
-        moveVertical(yDiff, delta);
+        if (yDiff !== 0) {
+          moveVertical(yDiff, delta);
+        }
+      } else {
+        const axis = new Vector3(xDiff, yDiff).cross(camera.getWorldDirection(new Vector3()));
+        rotateCamera(axis, delta);
       }
     }
     prevMousePosition = { x: e.clientX, y: e.clientY };
@@ -69,12 +82,13 @@ const CameraController = (props: ICameraControllerProps) => {
   return (
     <div
       id="camera-controller"
-      onMouseDown={mouseDownEvent}
+      onContextMenu={e => e.preventDefault()}
       onMouseUp={mouseUpEvent}
       onMouseMove={mouseMoveEvent}
       onWheel={mouseWheelEvent}
     >
-      {props.children(camera)}
+      {/* We only allow camera modifications to start within the canvas */}
+      <div onMouseDown={mouseDownEvent}>{props.children(camera)}</div>
     </div>
   );
 };
@@ -90,11 +104,12 @@ const useCameraControllerContext = ({
     const cam = new PerspectiveCamera(75, canvasWidth / canvasHeight, 0.1, 1000);
     cam.position.set(0, 40, -25);
     cam.lookAt(0, 0, 0);
+
     return cam;
   };
 
-  const camera = useMemo(createNewCamera, [createNewCamera]);
-  const [isDragging, setDragging] = useState(false);
+  const camera = useMemo(createNewCamera, []);
+  const [heldButton, setHeldButton] = useState(undefined as MouseButton | undefined);
 
   // =========
   // Functions
@@ -102,7 +117,7 @@ const useCameraControllerContext = ({
   const getFacingDir = () => camera.getWorldDirection(new Vector3());
 
   const rotateCamera = (axis: Vector3, delta: number) => {
-    camera.rotateOnWorldAxis(axis, (delta * rotationSpeed * Math.PI) / 180);
+    camera.rotateOnWorldAxis(axis.normalize(), (delta * rotationSpeed * Math.PI) / 180);
   };
 
   const zoomCamera = (amount: number, delta: number) => {
@@ -136,8 +151,8 @@ const useCameraControllerContext = ({
 
   return {
     camera,
-    isDragging,
-    setDragging,
+    heldButton,
+    setHeldButton,
     rotateCamera,
     moveHorizontal,
     moveVertical,

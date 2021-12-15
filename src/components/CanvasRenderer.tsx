@@ -17,6 +17,7 @@ export default class CanvasRenderer extends React.Component<ICanvasRendererProps
     super(props);
     this.renderer = new WebGLRenderer();
     this.renderer.setSize(props.width, props.height);
+    this.renderer.setClearColor(0x202227);
   }
 
   componentDidMount() {
@@ -32,7 +33,7 @@ export default class CanvasRenderer extends React.Component<ICanvasRendererProps
       oldProps.scene !== this.props.scene
     ) {
       if (this.animCancelValue) {
-        console.log('restarting aimation');
+        // console.log('restarting aimation');
         cancelAnimationFrame(this.animCancelValue);
       }
       this.renderer.setSize(this.props.width, this.props.height);
