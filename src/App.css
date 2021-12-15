@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+
+#camera-controller {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.canvas-renderer {
+  border: 2px solid aliceblue;
+}
+
+.canvas-renderer,
+.canvas-renderer * {
+  border-radius: 5px;
+}
