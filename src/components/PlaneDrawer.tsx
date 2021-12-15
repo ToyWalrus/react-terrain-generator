@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { BufferGeometry, Camera, Line, LineBasicMaterial, Scene } from 'three';
+import { BufferGeometry, Camera, Line, LineBasicMaterial, Scene, Vector3 } from 'three';
 import TerrainMap from '../terrain/TerrainMap';
 import CanvasRenderer from './CanvasRenderer';
 
@@ -20,7 +20,14 @@ const PlaneDrawer = (props: IPlaneDrawerProps) => {
 
   return (
     <div>
-      <CanvasRenderer camera={props.camera} scene={props.scene} width={props.canvasWidth} height={props.canvasHeight} />
+      <CanvasRenderer
+        scene={props.scene}
+        camera={props.camera}
+        width={props.canvasWidth}
+        height={props.canvasHeight}
+        autoRotate={props.autoRotate}
+        worldFocusPoint={new Vector3()}
+      />
     </div>
   );
 };

@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
-import { Scene } from 'three';
+import React, { useEffect, useState, useMemo } from 'react';
+import { PerspectiveCamera, Scene } from 'three';
 import NoiseGenerator from './util/NoiseGenerator';
 import Random from 'random';
 import PlaneDrawerSettings from './util/PlaneDrawerSettings';
 import PlaneDrawer from './components/PlaneDrawer';
 import SettingsEditor from './components/SettingsEditor';
 import TerrainMap from './terrain/TerrainMap';
-import CameraController from './components/CameraControls';
-import StaticClock from './util/StaticClock';
 
 import './App.css';
 
@@ -22,11 +20,11 @@ const App = () => {
     setCanvasHeight,
     setCanvasWidth,
     setKeepSeed,
-    clock,
+    camera,
   } = useAppContext();
 
   return (
-    <div className="App">
+    <div className="App" onContextMenu={e => e.preventDefault()}>
       <SettingsEditor
         settings={settings}
         onSubmitSettings={settings => {
@@ -34,34 +32,37 @@ const App = () => {
           updateSettings(settings);
         }}
       />
-
-      <CameraController canvasHeight={canvasHeight} canvasWidth={canvasWidth} clock={clock}>
-        {camera => (
-          <PlaneDrawer
-            camera={camera}
-            scene={scene}
-            canvasHeight={canvasHeight}
-            canvasWidth={canvasWidth}
-            terrainMap={terrainMap}
-            wireframeOnly={settings.wireframe}
-            autoRotate={settings.autoRotate}
-          />
-        )}
-      </CameraController>
+      <PlaneDrawer
+        camera={camera}
+        scene={scene}
+        canvasHeight={canvasHeight}
+        canvasWidth={canvasWidth}
+        terrainMap={terrainMap}
+        wireframeOnly={settings.wireframe}
+        autoRotate={settings.autoRotate}
+      />
     </div>
   );
 };
 
 const useAppContext = () => {
   const getRandomSeed = () => Random.integer(1000000, 1000000000);
+  const createNewCamera = () => {
+    const cam = new PerspectiveCamera(50, canvasWidth / canvasHeight);
+    cam.position.set(0, 30, -50);
+    return cam;
+  };
+  const createNewScene = () => {
+    const scene = new Scene();
+    return scene;
+  };
 
-  const [canvasWidth, setCanvasWidth] = useState(600);
+  const [canvasWidth, setCanvasWidth] = useState(650);
   const [canvasHeight, setCanvasHeight] = useState(600);
+  const scene = useMemo(createNewScene, []);
+  const camera = useMemo(createNewCamera, []);
+
   const [keepSeed, setKeepSeed] = useState(false);
-
-  const [scene] = useState(new Scene());
-  const [clock] = useState(new StaticClock());
-
   const [settings, updateSettings] = useState(
     new PlaneDrawerSettings({ arrHeight: 50, arrWidth: 50 }),
   );
@@ -106,6 +107,7 @@ const useAppContext = () => {
 
   return {
     scene,
+    camera,
     terrainMap,
     settings,
     updateSettings,
@@ -114,7 +116,6 @@ const useAppContext = () => {
     setCanvasHeight,
     setCanvasWidth,
     setKeepSeed,
-    clock,
   };
 };
 
