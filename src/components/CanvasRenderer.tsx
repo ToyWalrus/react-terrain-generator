@@ -97,7 +97,7 @@ export default class CanvasRenderer extends React.Component<ICanvasRendererProps
     controls.rotateSpeed = 0.2;
     controls.autoRotateSpeed = 1.25;
     controls.minPolarAngle = Math.PI / 5;
-    controls.maxPolarAngle = Math.PI / 2.2;
+    // controls.maxPolarAngle = Math.PI / 2.2;
     controls.maxDistance = 70;
 
     controls.mouseButtons = {

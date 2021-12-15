@@ -1,5 +1,14 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { BufferGeometry, Camera, Line, LineBasicMaterial, Mesh, Scene, Vector3 } from 'three';
+import {
+  BufferGeometry,
+  Camera,
+  HemisphereLight,
+  Line,
+  LineBasicMaterial,
+  Mesh,
+  Scene,
+  Vector3,
+} from 'three';
 import TerrainMap from '../terrain/TerrainMap';
 import MeshGenerator from '../util/MeshGenerator';
 import CanvasRenderer from './CanvasRenderer';
@@ -35,6 +44,10 @@ const PlaneDrawer = (props: IPlaneDrawerProps) => {
 
 const usePlaneDrawerContext = ({ scene, terrainMap, wireframeOnly }: IPlaneDrawerProps) => {
   const genMeshForScene = () => {
+    scene.clear();
+
+    scene.add(new HemisphereLight());
+
     const result = MeshGenerator.generateMeshFor(terrainMap, wireframeOnly);
     if (wireframeOnly) {
       const lines = result as Line[];

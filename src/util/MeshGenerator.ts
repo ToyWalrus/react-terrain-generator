@@ -99,23 +99,23 @@ export default class MeshGenerator {
 
     for (let row = 0; row < height - 1; ++row) {
       for (let col = 0; col < width - 1; ++col) {
-        const y1 = row;
-        const y2 = row + 1;
-        const x1 = col;
-        const x2 = col + 1;
+        const botLeft = map[col][row];
+        const botRight = map[col + 1][row];
+        const topRight = map[col + 1][row + 1];
+        const topLeft = map[col][row + 1];
 
         const quadPoints = [
-          this._scalePoint(map[x1][y1].point, scaleSettings), // bot left
-          this._scalePoint(map[x1][y2].point, scaleSettings), // top left
-          this._scalePoint(map[x2][y2].point, scaleSettings), // top right
-          this._scalePoint(map[x2][y1].point, scaleSettings), // bot right
+          this._scalePoint(botLeft.point, scaleSettings),
+          this._scalePoint(botRight.point, scaleSettings),
+          this._scalePoint(topRight.point, scaleSettings),
+          this._scalePoint(topLeft.point, scaleSettings),
         ];
 
         const quadColors = [
-          biomeColor(map[x1][y1].biome),
-          biomeColor(map[x1][y2].biome),
-          biomeColor(map[x2][y2].biome),
-          biomeColor(map[x2][y1].biome),
+          biomeColor(botLeft.biome),
+          biomeColor(botRight.biome),
+          biomeColor(topRight.biome),
+          biomeColor(topLeft.biome),
         ];
 
         // Two triangles make up a quad
@@ -124,7 +124,7 @@ export default class MeshGenerator {
         indices.push(vl + 1, vl + 2, vl + 3);
 
         vertices.push(...quadPoints);
-        normals.push(...quadPoints.map(p => p.normalize()));
+        normals.push(...quadPoints.map(p => new Vector3(0, 1, 0)));
         colors.push(...quadColors);
       }
     }
