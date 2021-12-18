@@ -31,12 +31,12 @@ export default class NoiseGenerator {
    * Sets a new seed and updates the noise accordingly.
    * @param seed The new seed to use.
    */
-  set seed(val: number | undefined) {
+  set seed(val: number) {
     this.settings.seed = val;
     this.whiteNoise = this._generateWhiteNoise();
   }
 
-  get seed(): number | undefined {
+  get seed(): number {
     return this.settings.seed;
   }
 
@@ -105,8 +105,16 @@ export default class NoiseGenerator {
         const verticalBlend = (y - vert1) * frequency;
 
         // Blend top and bottom two corners
-        const top = interpolate(this.whiteNoise[hor1][vert1], this.whiteNoise[hor2][vert1], horizontalBlend);
-        const bottom = interpolate(this.whiteNoise[hor1][vert2], this.whiteNoise[hor2][vert2], horizontalBlend);
+        const top = interpolate(
+          this.whiteNoise[hor1][vert1],
+          this.whiteNoise[hor2][vert1],
+          horizontalBlend,
+        );
+        const bottom = interpolate(
+          this.whiteNoise[hor1][vert2],
+          this.whiteNoise[hor2][vert2],
+          horizontalBlend,
+        );
 
         // Final blend
         smoothNoise[x].push(interpolate(top, bottom, verticalBlend));

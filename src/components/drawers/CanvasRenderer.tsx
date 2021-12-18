@@ -35,37 +35,23 @@ export default class CanvasRenderer extends React.Component<ICanvasRendererProps
   }
 
   componentDidUpdate(oldProps: Readonly<ICanvasRendererProps>) {
-    let didChangeSomething = false;
-
     if (this.props.camera && !this.controls) {
       this._initOrbitControls(this.props.camera);
-      didChangeSomething = true;
     }
 
     if (oldProps.width !== this.props.width || oldProps.height !== this.props.height) {
       this.renderer.setSize(this.props.width, this.props.height);
-      didChangeSomething = true;
     }
 
     if (this.controls) {
       if (oldProps.autoRotate !== this.props.autoRotate) {
         this.controls.autoRotate = !!this.props.autoRotate;
-        didChangeSomething = true;
       }
 
       if (oldProps.worldFocusPoint !== this.props.worldFocusPoint) {
         this.controls.target = this.props.worldFocusPoint || new Vector3();
         this.props.camera?.lookAt(this.controls.target);
-        didChangeSomething = true;
       }
-    }
-
-    if (didChangeSomething) {
-      if (this.animCancelValue) {
-        console.log('restarting aimation');
-        cancelAnimationFrame(this.animCancelValue);
-      }
-      this._startAnimation(this.props.scene, this.props.camera);
     }
   }
 
@@ -107,6 +93,7 @@ export default class CanvasRenderer extends React.Component<ICanvasRendererProps
     };
 
     this.controls = controls;
+    cam.lookAt(controls.target);
   }
 
   render() {

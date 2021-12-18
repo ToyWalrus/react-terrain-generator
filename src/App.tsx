@@ -67,7 +67,7 @@ const useAppContext = () => {
   const scene = useMemo(createNewScene, []);
   const camera = useMemo(createNewCamera, []);
 
-  const [keepSeed, setKeepSeed] = useState(false);
+  const [keepSeed, setKeepSeed] = useState(true);
   const [settings, updateSettings] = useState(
     new PlaneDrawerSettings({
       arrHeight: 50,

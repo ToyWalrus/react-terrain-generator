@@ -3,7 +3,41 @@
   flex-direction: column;
   flex: 1;
   padding: 0;
-  margin-right: 8px;
+}
+
+.value-editor.checkbox-editor {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.value-editor.checkbox-editor .value-label {
+  margin: 0;
+}
+
+.checkbox {
+  cursor: pointer;
+  margin-right: 12px;
+  height: 18px;
+  width: 18px;
+  border-radius: 4px;
+  outline: 1px solid #1d1d1d;
+}
+
+.checkbox.checked {
+  background-color: #4681f0;
+}
+
+.checkbox.checked:hover {
+  background-color: #3d6fce;
+}
+
+.checkbox.unchecked {
+  background-color: #f0f8ff;
+}
+
+.checkbox.unchecked:hover {
+  background-color: #d2dae0;
 }
 
 .value-editor .value-label {
@@ -17,8 +51,10 @@
   font-size: 20px;
   border-radius: 4px;
   padding: 4px 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .value-editor input:focus-visible {
-  outline: 2px solid rgb(70, 129, 240);
+  outline: 2px solid #4681f0;
 }

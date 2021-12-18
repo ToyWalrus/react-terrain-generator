@@ -24,33 +24,6 @@
   color: white;
 }
 
-#Settings {
-  display: flex;
-  /* position: absolute; */
-  flex-direction: column;
-  right: 10px;
-  padding: 10px;
-  padding-right: 2px;
-  border-radius: 5px;
-  background-color: #323641;
-
-  transition: right 300ms;
-}
-
-#Settings .settings-title {
-  margin: 16px 0;
-}
-
-#Settings.hidden {
-  right: -100px;
-}
-
-.canvas-edit-section {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-}
-
 #camera-controller {
   flex: 1;
   display: flex;
@@ -60,8 +33,7 @@
   width: 100%;
 }
 
-.canvas-renderer,
-#Settings {
+.canvas-renderer {
   border: 2px solid aliceblue;
 }
 
