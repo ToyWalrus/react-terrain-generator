@@ -24,9 +24,15 @@ const App = () => {
   } = useAppContext();
 
   return (
-    <div className="App" onContextMenu={e => e.preventDefault()}>
+    <div id="App" onContextMenu={e => e.preventDefault()}>
       <SettingsEditor
         settings={settings}
+        canvasHeight={canvasHeight}
+        canvasWidth={canvasWidth}
+        onChangeCanvasSize={newSize => {
+          setCanvasHeight(newSize.canvasHeight);
+          setCanvasWidth(newSize.canvasWidth);
+        }}
         onSubmitSettings={settings => {
           setKeepSeed(true);
           updateSettings(settings);

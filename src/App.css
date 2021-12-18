@@ -13,28 +13,42 @@
   }
 }
 
-.App {
+#App {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   font-size: calc(10px + 2vmin);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+#Settings {
+  display: flex;
+  /* position: absolute; */
+  flex-direction: column;
+  right: 10px;
+  padding: 10px;
+  padding-right: 2px;
+  border-radius: 5px;
+  background-color: #323641;
+
+  transition: right 300ms;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#Settings .settings-title {
+  margin: 16px 0;
+}
+
+#Settings.hidden {
+  right: -100px;
+}
+
+.canvas-edit-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
 
 #camera-controller {
@@ -46,11 +60,15 @@
   width: 100%;
 }
 
-.canvas-renderer {
+.canvas-renderer,
+#Settings {
   border: 2px solid aliceblue;
 }
 
 .canvas-renderer,
 .canvas-renderer * {
   border-radius: 5px;
+
+  transition: 200ms;
+  transition-timing-function: ease-in-out;
 }
