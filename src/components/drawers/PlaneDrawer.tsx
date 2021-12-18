@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { Camera, HemisphereLight, Scene } from 'three';
-import TerrainMap from '../terrain/TerrainMap';
-import MeshGenerator from '../util/MeshGenerator';
-import PlaneDrawerSettings from '../util/PlaneDrawerSettings';
+import TerrainMap from '../../terrain/TerrainMap';
+import MeshGenerator from '../../util/MeshGenerator';
+import PlaneDrawerSettings from '../../util/PlaneDrawerSettings';
 import CanvasRenderer from './CanvasRenderer';
 
 interface IPlaneDrawerProps {

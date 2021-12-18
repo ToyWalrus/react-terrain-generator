@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import PlaneDrawerSettings from '../util/PlaneDrawerSettings';
-import ValueEditor from './ValueEditor';
+import PlaneDrawerSettings from '../../util/PlaneDrawerSettings';
+import ValueEditor from '../value-editor/ValueEditor';
 
 interface ICanvasSize {
   canvasHeight: number;
@@ -32,6 +32,8 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
           label="Canvas Height"
         />
       </div>
+      <div className="general-settings-section"></div>
+      <div className="plane-drawer-edit-section"></div>
     </div>
   );
 };

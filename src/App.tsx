@@ -3,8 +3,8 @@ import { PerspectiveCamera, Scene } from 'three';
 import NoiseGenerator from './util/NoiseGenerator';
 import Random from 'random';
 import PlaneDrawerSettings from './util/PlaneDrawerSettings';
-import PlaneDrawer from './components/PlaneDrawer';
-import SettingsEditor from './components/SettingsEditor';
+import PlaneDrawer from './components/drawers/PlaneDrawer';
+import SettingsEditor from './components/settings-editor/SettingsEditor';
 import TerrainMap from './terrain/TerrainMap';
 
 import './App.css';
