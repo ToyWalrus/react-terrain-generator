@@ -40,6 +40,7 @@ export default class MeshGenerator {
   static _genWireframe(terrainMap: TerrainMap, scaleSettings?: IScaleSettings): Line[] {
     const { width, height, map } = terrainMap;
     const frame = [];
+    const heightOffset = this._getHeightOffset(terrainMap, scaleSettings?.scaleHeight);
 
     // Row lines
     for (let row = 0; row < height; ++row) {
@@ -72,7 +73,9 @@ export default class MeshGenerator {
 
     const lines: Line[] = [];
     frame.forEach(vertices => {
-      const geometry = new BufferGeometry().setFromPoints(vertices);
+      const geometry = new BufferGeometry().setFromPoints(
+        vertices.map(v => this._translatePoint(v, heightOffset)),
+      );
       const wireframeMaterial = new LineBasicMaterial({ color: this.wireframeColor });
       lines.push(new Line(geometry, wireframeMaterial));
     });
@@ -86,6 +89,7 @@ export default class MeshGenerator {
   static _genQuads(terrainMap: TerrainMap, scaleSettings?: IScaleSettings): Mesh {
     const { width, height, map } = terrainMap;
     const geometry = new BufferGeometry();
+    const heightOffset = this._getHeightOffset(terrainMap, scaleSettings?.scaleHeight);
 
     const vertices = [];
     const normals = [];
@@ -128,7 +132,7 @@ export default class MeshGenerator {
     geometry.setAttribute(
       'position',
       new Float32BufferAttribute(
-        vertices.flatMap(v => [v.x, v.y, v.z]),
+        vertices.map(v => this._translatePoint(v, heightOffset)).flatMap(v => [v.x, v.y, v.z]),
         3,
       ),
     );
@@ -163,5 +167,20 @@ export default class MeshGenerator {
     p.z *= scaleSettings.scaleLengthAndWidth;
     p.y *= scaleSettings.scaleHeight;
     return p;
+  }
+
+  /**
+   * @private
+   */
+  static _getHeightOffset({ highestPoint, lowestPoint }: TerrainMap, scaleHeight?: number) {
+    const heightScale = scaleHeight || 1;
+    return (highestPoint * heightScale - lowestPoint * heightScale) / 2;
+  }
+
+  /**
+   * @private
+   */
+  static _translatePoint({ x, y, z }: Vector3, amount: number): Vector3 {
+    return new Vector3(x, y - amount, z);
   }
 }

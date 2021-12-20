@@ -9,9 +9,13 @@ export interface TerrainPoint {
 
 export default class TerrainMap {
   map: TerrainPoint[][];
+  highestPoint: number;
+  lowestPoint: number;
 
   constructor(elevationMap?: number[][], temperatureMap?: number[][], moistureMap?: number[][]) {
     this.map = [];
+    this.highestPoint = Number.NEGATIVE_INFINITY
+    this.lowestPoint = Number.POSITIVE_INFINITY;
 
     const width = elevationMap ? elevationMap.length : 0;
     const height = elevationMap && elevationMap.length > 0 ? elevationMap[0].length : 0;
@@ -47,6 +51,8 @@ export default class TerrainMap {
           }
 
           this.map[col].push({ point, biome });
+
+          this._updateHighestLowestPoints(y);
         }
       }
     }
@@ -58,5 +64,17 @@ export default class TerrainMap {
 
   get width() {
     return this.map.length;
+  }
+
+  /**
+   * @private
+   */
+  _updateHighestLowestPoints(y: number) {
+    if (y > this.highestPoint) {
+      this.highestPoint = y;
+    }
+    if (y < this.lowestPoint) {
+      this.lowestPoint = y;
+    }
   }
 }
