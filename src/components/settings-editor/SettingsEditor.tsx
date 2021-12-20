@@ -103,12 +103,28 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
         <div className="settings-row">
           <ValueEditor.Checkbox
             value={settings.autoRotate}
-            onValueChanged={v => onSettingsChanged({ autoRotate: v })}
+            onValueChanged={v => {
+              onSettingsChanged({ autoRotate: v})
+              props.onSubmitSettings(
+                new PlaneDrawerSettings({
+                  ...props.settings,
+                  autoRotate: v,
+                }),
+              );
+            }}
             label="Auto Rotate"
           />
           <ValueEditor.Checkbox
             value={settings.wireframe}
-            onValueChanged={v => onSettingsChanged({ wireframe: v })}
+            onValueChanged={v => {
+              onSettingsChanged({ wireframe: v})
+              props.onSubmitSettings(
+                new PlaneDrawerSettings({
+                  ...props.settings,
+                  wireframe: v,
+                }),
+              );
+            }}
             label="Wireframe Only"
           />
         </div>

@@ -9,7 +9,6 @@ interface ICanvasRendererProps {
   scene?: Scene;
   camera?: Camera;
   autoRotate?: boolean;
-  worldFocusPoint?: Vector3;
 }
 
 export default class CanvasRenderer extends React.Component<ICanvasRendererProps> {
@@ -43,15 +42,8 @@ export default class CanvasRenderer extends React.Component<ICanvasRendererProps
       this.renderer.setSize(this.props.width, this.props.height);
     }
 
-    if (this.controls) {
-      if (oldProps.autoRotate !== this.props.autoRotate) {
-        this.controls.autoRotate = !!this.props.autoRotate;
-      }
-
-      if (oldProps.worldFocusPoint !== this.props.worldFocusPoint) {
-        this.controls.target = this.props.worldFocusPoint || new Vector3();
-        this.props.camera?.lookAt(this.controls.target);
-      }
+    if (this.controls && oldProps.autoRotate !== this.props.autoRotate) {
+      this.controls.autoRotate = !!this.props.autoRotate;
     }
   }
 
@@ -60,6 +52,9 @@ export default class CanvasRenderer extends React.Component<ICanvasRendererProps
       const animate = () => {
         this.animCancelValue = requestAnimationFrame(animate);
         if (this.controls) {
+          if (this.controls.autoRotate) {
+            this.controls.target = new Vector3();
+          }
           this.controls.update();
         }
         this.renderer.render(scene, cam);
@@ -76,13 +71,13 @@ export default class CanvasRenderer extends React.Component<ICanvasRendererProps
 
     // Some of these could probably become editable settings too
     controls.screenSpacePanning = false;
-    controls.target = this.props.worldFocusPoint || new Vector3();
     controls.autoRotate = !!this.props.autoRotate;
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.panSpeed = 0.8;
+    controls.panSpeed = 0.75;
     controls.rotateSpeed = 0.2;
-    controls.autoRotateSpeed = 1.25;
+    controls.maxDistance = 500;
+    controls.autoRotateSpeed = 1.2;
     controls.minPolarAngle = Math.PI / 5;
     controls.maxPolarAngle = Math.PI / 2.05;
 

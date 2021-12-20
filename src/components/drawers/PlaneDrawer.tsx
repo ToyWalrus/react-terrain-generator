@@ -25,7 +25,6 @@ const PlaneDrawer = (props: IPlaneDrawerProps) => {
         width={props.canvasWidth}
         height={props.canvasHeight}
         autoRotate={props.settings.autoRotate}
-        worldFocusPoint={MeshGenerator.meshCenterPoint}
       />
     </div>
   );
