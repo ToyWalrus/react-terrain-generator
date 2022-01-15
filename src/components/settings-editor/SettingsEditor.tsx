@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PlaneDrawerSettings from '../../util/PlaneDrawerSettings';
 import ValueEditor from '../value-editor/ValueEditor';
 import './SettingsEditor.css';
@@ -10,7 +10,7 @@ interface ICanvasSize {
 
 interface ISettingsEditorProps {
   settings: PlaneDrawerSettings;
-  onSubmitSettings: (newSettings: PlaneDrawerSettings) => void;
+  onSubmitSettings: (newSettings: PlaneDrawerSettings, keepSeed: boolean) => void;
   onChangeCanvasSize: (newSize: ICanvasSize) => void;
 }
 
@@ -104,12 +104,13 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
           <ValueEditor.Checkbox
             value={settings.autoRotate}
             onValueChanged={v => {
-              onSettingsChanged({ autoRotate: v})
+              onSettingsChanged({ autoRotate: v });
               props.onSubmitSettings(
                 new PlaneDrawerSettings({
                   ...props.settings,
                   autoRotate: v,
                 }),
+                true,
               );
             }}
             label="Auto Rotate"
@@ -117,12 +118,13 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
           <ValueEditor.Checkbox
             value={settings.wireframe}
             onValueChanged={v => {
-              onSettingsChanged({ wireframe: v})
+              onSettingsChanged({ wireframe: v });
               props.onSubmitSettings(
                 new PlaneDrawerSettings({
                   ...props.settings,
                   wireframe: v,
                 }),
+                true,
               );
             }}
             label="Wireframe Only"
@@ -132,10 +134,16 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
       <div className="buttons">
         <input
           type="button"
+          onClick={() => props.onSubmitSettings(settings, false)}
+          value="Regenerate"
+        />
+        <span className="spacer" />
+        <input
+          type="button"
           onClick={() => onSettingsChanged(props.settings)}
           value="Reset Settings"
         />
-        <input type="button" onClick={() => props.onSubmitSettings(settings)} value="Save" />
+        <input type="button" onClick={() => props.onSubmitSettings(settings, true)} value="Save" />
       </div>
     </div>
   );
@@ -145,6 +153,10 @@ const useSettingsEditorContext = (props: ISettingsEditorProps & ICanvasSize) => 
   const [settings, setSettings] = useState(props.settings);
   const [canvasHeight, setCanvasHeight] = useState(props.canvasHeight);
   const [canvasWidth, setCanvasWidth] = useState(props.canvasWidth);
+
+  useEffect(() => {
+    onSettingsChanged({ seed: props.settings.seed });
+  }, [props.settings.seed]);
 
   const onCanvasHeightChanged = (newHeight: number) => {
     setCanvasHeight(newHeight);

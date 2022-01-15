@@ -1,6 +1,7 @@
 import Random from 'random';
 import Settings from './Settings';
 import { interpolate } from './MathUtil';
+import seedrandom from 'seedrandom';
 
 export interface Dimension {
   width: number;
@@ -66,15 +67,19 @@ export default class NoiseGenerator {
    */
   _generateWhiteNoise(): number[][] {
     const { width, height } = this.dimensions;
-    const rand = this.seed !== undefined ? Random.clone(this.seed.toString()) : Random;
+    const rand =
+      this.seed !== undefined
+        ? Random.clone(seedrandom(this.seed.toString())).uniform()
+        : Random.uniform();
     const noise: number[][] = [];
 
     for (let x = 0; x < width; ++x) {
       noise.push([]);
       for (let y = 0; y < height; ++y) {
-        noise[x].push(rand.next());
+        noise[x].push(rand());
       }
     }
+
     return noise;
   }
 

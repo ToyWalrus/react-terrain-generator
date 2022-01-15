@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { PerspectiveCamera, Scene } from 'three';
 import NoiseGenerator from './util/NoiseGenerator';
-import Random from 'random';
 import PlaneDrawerSettings from './util/PlaneDrawerSettings';
 import PlaneDrawer from './components/drawers/PlaneDrawer';
 import SettingsEditor from './components/settings-editor/SettingsEditor';
 import TerrainMap from './terrain/TerrainMap';
+import Random from 'random';
 
 import './App.css';
 
@@ -33,8 +33,8 @@ const App = () => {
           setCanvasHeight(newSize.canvasHeight);
           setCanvasWidth(newSize.canvasWidth);
         }}
-        onSubmitSettings={settings => {
-          setKeepSeed(true);
+        onSubmitSettings={(settings, keepSeed) => {
+          setKeepSeed(keepSeed);
           updateSettings(settings);
         }}
       />
@@ -64,6 +64,7 @@ const useAppContext = () => {
 
   const [canvasWidth, setCanvasWidth] = useState(650);
   const [canvasHeight, setCanvasHeight] = useState(600);
+  const [renderCount, setRenderCount] = useState(0);
   const scene = useMemo(createNewScene, []);
   const camera = useMemo(createNewCamera, []);
 
@@ -78,9 +79,9 @@ const useAppContext = () => {
     }),
   );
 
-  const [elevationSeed, setElevationSeed] = useState(getRandomSeed());
-  const [temperatureSeed, setTemperatureSeed] = useState(getRandomSeed());
-  const [moistureSeed, setMoistureSeed] = useState(getRandomSeed());
+  const [elevationSeed, setElevationSeed] = useState(settings.seed);
+  const [temperatureSeed, setTemperatureSeed] = useState(settings.seed + 1);
+  const [moistureSeed, setMoistureSeed] = useState(settings.seed + 2);
 
   const [elevationMap, setElevationMap] = useState([] as number[][]);
   const [temperatureMap, setTemperatureMap] = useState([] as number[][]);
@@ -92,9 +93,11 @@ const useAppContext = () => {
     const generator = new NoiseGenerator(settings.seed || 0, settings.arrWidth, settings.arrHeight);
 
     if (!keepSeed) {
-      setElevationSeed(getRandomSeed());
-      setTemperatureSeed(getRandomSeed());
-      setMoistureSeed(getRandomSeed());
+      settings.seed = getRandomSeed();
+      setElevationSeed(settings.seed);
+      setTemperatureSeed(settings.seed + 1);
+      setMoistureSeed(settings.seed + 2);
+      setKeepSeed(true);
     }
 
     settings.seed = elevationSeed;
@@ -108,7 +111,7 @@ const useAppContext = () => {
     settings.seed = moistureSeed;
     generator.changeSettings(settings);
     setMoistureMap(generator.generatePerlinNoise(settings.octaves));
-  }, [settings]);
+  }, [settings, renderCount]);
 
   useEffect(() => {
     if (elevationMap.length && temperatureMap.length && moistureMap.length) {
@@ -121,7 +124,10 @@ const useAppContext = () => {
     camera,
     terrainMap,
     settings,
-    updateSettings,
+    updateSettings: (settings: PlaneDrawerSettings) => {
+      updateSettings(settings);
+      setRenderCount(renderCount + 1);
+    },
     canvasHeight,
     canvasWidth,
     setCanvasHeight,

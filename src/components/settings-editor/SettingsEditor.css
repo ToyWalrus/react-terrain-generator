@@ -45,3 +45,7 @@
   justify-content: flex-end;
   margin-top: 12px;
 }
+
+.buttons .spacer {
+  flex: 1;
+}
