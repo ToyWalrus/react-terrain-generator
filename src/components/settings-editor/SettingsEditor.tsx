@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PlaneDrawerSettings from '../../util/PlaneDrawerSettings';
 import ValueEditor from '../value-editor/ValueEditor';
+import { defaultSettings } from './Defaults';
 import './SettingsEditor.css';
 
 interface ICanvasSize {
@@ -135,13 +136,13 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
         <input
           type="button"
           onClick={() => props.onSubmitSettings(settings, false)}
-          value="Regenerate"
+          value="Randomize Seed"
         />
         <span className="spacer" />
         <input
           type="button"
-          onClick={() => onSettingsChanged(props.settings)}
-          value="Reset Settings"
+          onClick={() => onSettingsChanged(defaultSettings)}
+          value="Default Settings"
         />
         <input type="button" onClick={() => props.onSubmitSettings(settings, true)} value="Save" />
       </div>

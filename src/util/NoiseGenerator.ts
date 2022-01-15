@@ -18,13 +18,8 @@ export default class NoiseGenerator {
    * @param width The desired width of the array.
    * @param height The desired height of the array.
    */
-  constructor(seed: number, width: number, height: number) {
-    const settings = new Settings();
-    settings.seed = seed;
-    settings.arrWidth = width;
-    settings.arrHeight = height;
-    this.settings = settings;
-
+  constructor(generatorSettings: Settings) {
+    this.settings = new Settings(generatorSettings);
     this.whiteNoise = this._generateWhiteNoise();
   }
 
@@ -32,12 +27,12 @@ export default class NoiseGenerator {
    * Sets a new seed and updates the noise accordingly.
    * @param seed The new seed to use.
    */
-  set seed(val: number) {
+  set seed(val: string) {
     this.settings.seed = val;
     this.whiteNoise = this._generateWhiteNoise();
   }
 
-  get seed(): number {
+  get seed(): string {
     return this.settings.seed;
   }
 
@@ -68,9 +63,7 @@ export default class NoiseGenerator {
   _generateWhiteNoise(): number[][] {
     const { width, height } = this.dimensions;
     const rand =
-      this.seed !== undefined
-        ? Random.clone(seedrandom(this.seed.toString())).uniform()
-        : Random.uniform();
+      this.seed !== undefined ? Random.clone(seedrandom(this.seed)).uniform() : Random.uniform();
     const noise: number[][] = [];
 
     for (let x = 0; x < width; ++x) {

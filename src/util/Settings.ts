@@ -4,14 +4,14 @@ import { Color } from 'three';
 export default class Settings {
   arrWidth: number;
   arrHeight: number;
-  seed: number;
+  seed: string;
   octaves: number;
   persistance: number;
   gradientStart: Color;
   gradientEnd: Color;
 
   constructor(other?: Partial<Settings>) {
-    this.seed = other?.seed || Random.integer(1000000, 1000000000);
+    this.seed = other?.seed || Random.integer(1000000, 1000000000).toString();
     this.arrWidth = other?.arrWidth || 0;
     this.arrHeight = other?.arrHeight || 0;
     this.octaves = other?.octaves || 8;

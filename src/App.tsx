@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { PerspectiveCamera, Scene } from 'three';
+import { defaultSeeds, defaultSettings } from './components/settings-editor/Defaults';
 import NoiseGenerator from './util/NoiseGenerator';
 import PlaneDrawerSettings from './util/PlaneDrawerSettings';
 import PlaneDrawer from './components/drawers/PlaneDrawer';
 import SettingsEditor from './components/settings-editor/SettingsEditor';
 import TerrainMap from './terrain/TerrainMap';
-import Random from 'random';
 
 import './App.css';
 
@@ -21,7 +21,7 @@ const App = () => {
     setCanvasWidth,
     setKeepSeed,
     camera,
-  } = useAppContext();
+  } = useAppHook();
 
   return (
     <div id="App" onContextMenu={e => e.preventDefault()}>
@@ -50,8 +50,7 @@ const App = () => {
   );
 };
 
-const useAppContext = () => {
-  const getRandomSeed = () => Random.integer(1000000, 1000000000);
+const useAppHook = () => {
   const createNewCamera = () => {
     const cam = new PerspectiveCamera(50, canvasWidth / canvasHeight);
     cam.position.set(0, 200, -100);
@@ -62,6 +61,7 @@ const useAppContext = () => {
     return scene;
   };
 
+  const [randomSeeds, setRandomSeeds] = useState([] as string[]);
   const [canvasWidth, setCanvasWidth] = useState(650);
   const [canvasHeight, setCanvasHeight] = useState(600);
   const [renderCount, setRenderCount] = useState(0);
@@ -69,19 +69,7 @@ const useAppContext = () => {
   const camera = useMemo(createNewCamera, []);
 
   const [keepSeed, setKeepSeed] = useState(true);
-  const [settings, updateSettings] = useState(
-    new PlaneDrawerSettings({
-      arrHeight: 50,
-      arrWidth: 50,
-      heightAmplify: 300,
-      wireframe: false,
-      autoRotate: true,
-    }),
-  );
-
-  const [elevationSeed, setElevationSeed] = useState(settings.seed);
-  const [temperatureSeed, setTemperatureSeed] = useState(settings.seed + 1);
-  const [moistureSeed, setMoistureSeed] = useState(settings.seed + 2);
+  const [settings, updateSettings] = useState(new PlaneDrawerSettings(defaultSettings));
 
   const [elevationMap, setElevationMap] = useState([] as number[][]);
   const [temperatureMap, setTemperatureMap] = useState([] as number[][]);
@@ -90,34 +78,63 @@ const useAppContext = () => {
   const [terrainMap, setTerrainMap] = useState(new TerrainMap());
 
   useEffect(() => {
-    const generator = new NoiseGenerator(settings.seed || 0, settings.arrWidth, settings.arrHeight);
-
     if (!keepSeed) {
-      settings.seed = getRandomSeed();
-      setElevationSeed(settings.seed);
-      setTemperatureSeed(settings.seed + 1);
-      setMoistureSeed(settings.seed + 2);
+      settings.seed = `${randomSeeds[0]} ${randomSeeds[1]}`;
+      setRandomSeeds(randomSeeds.slice(2));
       setKeepSeed(true);
     }
 
-    settings.seed = elevationSeed;
-    generator.changeSettings(settings);
+    const generator = new NoiseGenerator(settings);
+    const seed = settings.seed;
+
+    generator.seed = 'elevation-' + seed;
     setElevationMap(generator.generatePerlinNoise(settings.octaves));
 
-    settings.seed = temperatureSeed;
-    generator.changeSettings(settings);
+    generator.seed = 'temperature-' + seed;
     setTemperatureMap(generator.generatePerlinNoise(settings.octaves));
 
-    settings.seed = moistureSeed;
-    generator.changeSettings(settings);
+    generator.seed = 'moisture-' + seed;
     setMoistureMap(generator.generatePerlinNoise(settings.octaves));
   }, [settings, renderCount]);
 
   useEffect(() => {
     if (elevationMap.length && temperatureMap.length && moistureMap.length) {
+      console.log('resetting terrain');
       setTerrainMap(new TerrainMap(elevationMap, temperatureMap, moistureMap));
     }
   }, [elevationMap, temperatureMap, moistureMap]);
+
+  useEffect(() => {
+    const getWords = async () => {
+      try {
+        const pairCount = 10;
+
+        const [nounResponse, adjectiveResponse] = await Promise.all([
+          fetch(`https://random-word-form.herokuapp.com/random/noun?count=${pairCount}`),
+          fetch(`https://random-word-form.herokuapp.com/random/adjective?count=${pairCount}`),
+        ]);
+
+        const [nouns, adjectives] = await Promise.all([
+          nounResponse.json(),
+          adjectiveResponse.json(),
+        ]);
+
+        const pairs = [];
+        for (let i = 0; i < pairCount; ++i) {
+          pairs.push(adjectives.shift(), nouns.shift());
+        }
+
+        setRandomSeeds(pairs);
+      } catch (e) {
+        console.info(e);
+        setRandomSeeds(defaultSeeds);
+      }
+    };
+
+    if (randomSeeds.length === 0) {
+      getWords();
+    }
+  }, [randomSeeds]);
 
   return {
     scene,

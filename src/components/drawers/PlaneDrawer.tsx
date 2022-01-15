@@ -31,7 +31,7 @@ const PlaneDrawer = (props: IPlaneDrawerProps) => {
 };
 
 const usePlaneDrawerContext = ({ scene, terrainMap, settings }: IPlaneDrawerProps) => {
-  const genMeshForScene = () => {
+  useEffect(() => {
     scene.clear();
 
     scene.add(new HemisphereLight());
@@ -46,9 +46,7 @@ const usePlaneDrawerContext = ({ scene, terrainMap, settings }: IPlaneDrawerProp
     if (!settings.wireframe) {
       scene.add(mesh);
     }
-  };
-
-  useEffect(genMeshForScene, [terrainMap, settings, MeshGenerator.wireframeColor]);
+  }, [terrainMap, settings, MeshGenerator.wireframeColor]);
 };
 
 export default PlaneDrawer;
