@@ -43,13 +43,13 @@ export default class MeshGenerator {
     const heightOffset = this._getHeightOffset(terrainMap, scaleSettings?.scaleHeight);
 
     // Row lines
-    for (let row = 0; row < height; ++row) {
+    for (let y = 0; y < height; ++y) {
       const rowVertices: Vector3[] = [];
 
-      for (let col = 0; col < width; ++col) {
-        const point = this._scalePoint(map[row][col].point, scaleSettings);
+      for (let x = 0; x < width; ++x) {
+        const point = this._scalePoint(map[x][y].point, scaleSettings);
 
-        if (row === Math.floor(height / 2) && col === Math.floor(width / 2)) {
+        if (y === Math.floor(height / 2) && x === Math.floor(width / 2)) {
           MeshGenerator._meshCenterPoint = new Vector3().copy(point);
         }
 
@@ -60,11 +60,11 @@ export default class MeshGenerator {
     }
 
     // Column lines
-    for (let col = 0; col < width; ++col) {
+    for (let x = 0; x < width; ++x) {
       const colVertices: Vector3[] = [];
 
-      for (let row = 0; row < height; ++row) {
-        const point = this._scalePoint(map[row][col].point, scaleSettings);
+      for (let y = 0; y < height; ++y) {
+        const point = this._scalePoint(map[x][y].point, scaleSettings);
         colVertices.push(point);
       }
 
@@ -96,12 +96,12 @@ export default class MeshGenerator {
     const indices = [];
     const colors = [];
 
-    for (let row = 0; row < height - 1; ++row) {
-      for (let col = 0; col < width - 1; ++col) {
-        const botLeft = map[col][row];
-        const botRight = map[col + 1][row];
-        const topRight = map[col + 1][row + 1];
-        const topLeft = map[col][row + 1];
+    for (let y = 0; y < height - 1; ++y) {
+      for (let x = 0; x < width - 1; ++x) {
+        const botLeft = map[x][y];
+        const botRight = map[x + 1][y];
+        const topRight = map[x + 1][y + 1];
+        const topLeft = map[x][y + 1];
 
         const quadPoints = [
           this._scalePoint(botLeft.point, scaleSettings),
