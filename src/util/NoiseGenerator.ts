@@ -62,8 +62,7 @@ export default class NoiseGenerator {
    */
   _generateWhiteNoise(): number[][] {
     const { width, height } = this.dimensions;
-    const rand =
-      this.seed !== undefined ? Random.clone(seedrandom(this.seed)).uniform() : Random.uniform();
+    const rand = this.seed !== undefined ? Random.clone(seedrandom(this.seed)).uniform() : Random.uniform();
     const noise: number[][] = [];
 
     for (let x = 0; x < width; ++x) {
@@ -103,16 +102,8 @@ export default class NoiseGenerator {
         const verticalBlend = (y - vert1) * frequency;
 
         // Blend top and bottom two corners
-        const top = interpolate(
-          this.whiteNoise[hor1][vert1],
-          this.whiteNoise[hor2][vert1],
-          horizontalBlend,
-        );
-        const bottom = interpolate(
-          this.whiteNoise[hor1][vert2],
-          this.whiteNoise[hor2][vert2],
-          horizontalBlend,
-        );
+        const top = interpolate(this.whiteNoise[hor1][vert1], this.whiteNoise[hor2][vert1], horizontalBlend);
+        const bottom = interpolate(this.whiteNoise[hor1][vert2], this.whiteNoise[hor2][vert2], horizontalBlend);
 
         // Final blend
         smoothNoise[x].push(interpolate(top, bottom, verticalBlend));
