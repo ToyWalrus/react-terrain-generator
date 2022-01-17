@@ -29,13 +29,13 @@
     &:hover {
       background-color: #3d6fce;
     }
+  }
 
-    &.unchecked {
-      background-color: #f0f8ff;
+  &.unchecked {
+    background-color: #f0f8ff;
 
-      &:hover {
-        background-color: #d2dae0;
-      }
+    &:hover {
+      background-color: #d2dae0;
     }
   }
 }

@@ -47,7 +47,7 @@ module.exports = {
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.(jpe?g|png|svg)$/,
+        test: /\.(jpe?g|png|svg|ico)$/,
         exclude: /node_modules/,
         use: ['file-loader'],
       },

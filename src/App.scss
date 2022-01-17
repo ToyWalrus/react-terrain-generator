@@ -14,8 +14,29 @@ code {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: column;
+
+  .app-title {
+    color: white;
+    text-align: center;
+    font-size: 3em;
+    font-weight: bold;
+    padding-top: 30px;
+  }
+
+  .spacer {
+    flex: 1;
+
+    &.double {
+      flex: 2;
+    }
+  }
+}
+
+#ProceduralTerrainGenerator {
+  display: flex;
   align-items: center;
+  flex-direction: row-reverse;
   justify-content: space-evenly;
   font-size: calc(10px + 2vmin);
   color: white;

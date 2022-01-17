@@ -24,29 +24,34 @@ const App = () => {
   } = useAppHook();
 
   return (
-    <div id="App" onContextMenu={e => e.preventDefault()}>
-      <SettingsEditor
-        settings={settings}
-        canvasHeight={canvasHeight}
-        canvasWidth={canvasWidth}
-        onChangeCanvasSize={newSize => {
-          setCanvasHeight(newSize.canvasHeight);
-          setCanvasWidth(newSize.canvasWidth);
-        }}
-        onSubmitSettings={(settings, keepSeed) => {
-          setKeepSeed(keepSeed);
-          updateSettings(settings);
-        }}
-      />
-      <PlaneDrawer
-        camera={camera}
-        scene={scene}
-        canvasHeight={canvasHeight}
-        canvasWidth={canvasWidth}
-        terrainMap={terrainMap}
-        settings={settings}
-      />
-      <ReactTooltip className="tooltip-popup" backgroundColor="#282c34" border={true} multiline={true} />
+    <div id="App">
+      <div className="app-title">Procedural Terrain Generator</div>
+      <div className="spacer" />
+      <div id="ProceduralTerrainGenerator" onContextMenu={e => e.preventDefault()}>
+        <SettingsEditor
+          settings={settings}
+          canvasHeight={canvasHeight}
+          canvasWidth={canvasWidth}
+          onChangeCanvasSize={newSize => {
+            setCanvasHeight(newSize.canvasHeight);
+            setCanvasWidth(newSize.canvasWidth);
+          }}
+          onSubmitSettings={(settings, keepSeed) => {
+            setKeepSeed(keepSeed);
+            updateSettings(settings);
+          }}
+        />
+        <PlaneDrawer
+          camera={camera}
+          scene={scene}
+          canvasHeight={canvasHeight}
+          canvasWidth={canvasWidth}
+          terrainMap={terrainMap}
+          settings={settings}
+        />
+        <ReactTooltip className="tooltip-popup" backgroundColor="#282c34" border={true} multiline={true} />
+      </div>
+      <div className="spacer double" />
     </div>
   );
 };
