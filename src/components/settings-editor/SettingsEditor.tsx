@@ -16,14 +16,8 @@ interface ISettingsEditorProps {
 }
 
 const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
-  const {
-    settings,
-    canvasWidth,
-    canvasHeight,
-    onCanvasWidthChanged,
-    onCanvasHeightChanged,
-    onSettingsChanged,
-  } = useSettingsEditorContext(props);
+  const { settings, canvasWidth, canvasHeight, onCanvasWidthChanged, onCanvasHeightChanged, onSettingsChanged } =
+    useSettingsEditorContext(props);
 
   return (
     <div className="settings-editor">
@@ -46,11 +40,7 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
       </div>
       <div className="general-settings-section">
         <div className="settings-row">
-          <ValueEditor
-            value={settings.seed}
-            onValueChanged={v => onSettingsChanged({ seed: v })}
-            label="Seed"
-          />
+          <ValueEditor value={settings.seed} onValueChanged={v => onSettingsChanged({ seed: v })} label="Seed" />
         </div>
         <div className="settings-row">
           <ValueEditor
@@ -71,6 +61,7 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
             value={settings.octaves}
             onValueChanged={v => onSettingsChanged({ octaves: v })}
             label="Octaves"
+            tooltip="This setting affects the number of times the landscape is blended"
           />
           <ValueEditor
             float
@@ -80,6 +71,7 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
             value={settings.persistance}
             onValueChanged={v => onSettingsChanged({ persistance: v })}
             label="Persistance"
+            tooltip='This setting affects the "smoothing" factor'
           />
         </div>
       </div>
@@ -133,17 +125,9 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
         </div>
       </div>
       <div className="buttons">
-        <input
-          type="button"
-          onClick={() => props.onSubmitSettings(settings, false)}
-          value="Randomize Seed"
-        />
+        <input type="button" onClick={() => props.onSubmitSettings(settings, false)} value="Randomize Seed" />
         <span className="spacer" />
-        <input
-          type="button"
-          onClick={() => onSettingsChanged(defaultSettings)}
-          value="Default Settings"
-        />
+        <input type="button" onClick={() => onSettingsChanged(defaultSettings)} value="Default Settings" />
         <input type="button" onClick={() => props.onSubmitSettings(settings, true)} value="Save" />
       </div>
     </div>

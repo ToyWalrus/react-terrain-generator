@@ -6,8 +6,8 @@ import PlaneDrawerSettings from './util/PlaneDrawerSettings';
 import PlaneDrawer from './components/drawers/PlaneDrawer';
 import SettingsEditor from './components/settings-editor/SettingsEditor';
 import TerrainMap from './terrain/TerrainMap';
-
-import './App.css';
+import ReactTooltip from 'react-tooltip';
+import './App.scss';
 
 const App = () => {
   const {
@@ -46,6 +46,7 @@ const App = () => {
         terrainMap={terrainMap}
         settings={settings}
       />
+      <ReactTooltip className="tooltip-popup" backgroundColor="#282c34" border={true} multiline={true} />
     </div>
   );
 };
@@ -99,7 +100,6 @@ const useAppHook = () => {
 
   useEffect(() => {
     if (elevationMap.length && temperatureMap.length && moistureMap.length) {
-      console.log('resetting terrain');
       setTerrainMap(new TerrainMap(elevationMap, temperatureMap, moistureMap));
     }
   }, [elevationMap, temperatureMap, moistureMap]);
@@ -114,10 +114,7 @@ const useAppHook = () => {
           fetch(`https://random-word-form.herokuapp.com/random/adjective?count=${pairCount}`),
         ]);
 
-        const [nouns, adjectives] = await Promise.all([
-          nounResponse.json(),
-          adjectiveResponse.json(),
-        ]);
+        const [nouns, adjectives] = await Promise.all([nounResponse.json(), adjectiveResponse.json()]);
 
         const pairs = [];
         for (let i = 0; i < pairCount; ++i) {

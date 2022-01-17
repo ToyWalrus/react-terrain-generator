@@ -1,5 +1,6 @@
 import React from 'react';
-import './ValueEditor.css';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
+import './ValueEditor.scss';
 
 interface IValueEditorProps {
   value: any;
@@ -10,6 +11,7 @@ interface IValueEditorProps {
   maxValue?: number;
   minValue?: number;
   className?: string;
+  tooltip?: string;
 }
 
 const ValueEditor = ({
@@ -18,6 +20,7 @@ const ValueEditor = ({
   onValueChanged,
   float,
   className,
+  tooltip,
   maxValue,
   minValue,
   step,
@@ -60,7 +63,12 @@ const ValueEditor = ({
 
   return (
     <div className={'value-editor' + (className ? ` ${className}` : '')}>
-      {label && <span className="value-label">{label}</span>}
+      {label && (
+        <div className="value-label">
+          {label}
+          {tooltip && <InfoIcon className="info-icon" fontSize="small" data-tip={tooltip} />}
+        </div>
+      )}
       <input
         type={inputType}
         value={value}
@@ -76,10 +84,7 @@ const ValueEditor = ({
 ValueEditor.Checkbox = ({ label, value, onValueChanged, className }: IValueEditorProps) => {
   return (
     <div className={'value-editor checkbox-editor' + (className ? ` ${className}` : '')}>
-      <div
-        className={'checkbox ' + (!!value ? 'checked' : 'unchecked')}
-        onClick={() => onValueChanged(!value)}
-      />
+      <div className={'checkbox ' + (!!value ? 'checked' : 'unchecked')} onClick={() => onValueChanged(!value)} />
       {label && <span className="value-label">{label}</span>}
     </div>
   );
