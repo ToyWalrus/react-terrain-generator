@@ -4,6 +4,7 @@ body {
     'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
 code {
@@ -16,12 +17,22 @@ code {
   display: flex;
   flex-direction: column;
 
-  .app-title {
-    color: white;
-    text-align: center;
-    font-size: 3em;
-    font-weight: bold;
+  .title-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     padding-top: 30px;
+
+    .app-title {
+      color: white;
+      text-align: center;
+      font-size: 3em;
+      font-weight: bold;
+    }
+  }
+
+  .settings-button {
+    color: white;
   }
 
   .spacer {
@@ -40,6 +51,16 @@ code {
   justify-content: space-evenly;
   font-size: calc(10px + 2vmin);
   color: white;
+
+  .settings-visible {
+    position: relative;
+    right: 0;
+  }
+
+  .settings-hidden {
+    position: absolute;
+    right: -30vw;
+  }
 }
 
 #camera-controller {

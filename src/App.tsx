@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { PerspectiveCamera, Scene } from 'three';
 import { defaultSeeds, defaultSettings } from './components/settings-editor/Defaults';
+import SettingsIcon from '@material-ui/icons/Settings';
+import classNames from 'classnames';
 import NoiseGenerator from './util/NoiseGenerator';
 import PlaneDrawerSettings from './util/PlaneDrawerSettings';
 import PlaneDrawer from './components/drawers/PlaneDrawer';
@@ -8,12 +10,15 @@ import SettingsEditor from './components/settings-editor/SettingsEditor';
 import TerrainMap from './terrain/TerrainMap';
 import ReactTooltip from 'react-tooltip';
 import './App.scss';
+import { IconButton } from '@material-ui/core';
 
 const App = () => {
   const {
-    settings,
     scene,
+    settings,
     terrainMap,
+    settingsVisible,
+    setSettingsVisible,
     updateSettings,
     canvasHeight,
     canvasWidth,
@@ -25,7 +30,16 @@ const App = () => {
 
   return (
     <div id="App">
-      <div className="app-title">Procedural Terrain Generator</div>
+      <div className="title-row">
+        <div className="spacer" />
+        <div className="app-title">Procedural Terrain Generator</div>
+        <div className="spacer" />
+        <div>
+          <IconButton onClick={() => setSettingsVisible(true)}>
+            <SettingsIcon className="settings-button" fontSize="large" />
+          </IconButton>
+        </div>
+      </div>
       <div className="spacer" />
       <div id="ProceduralTerrainGenerator" onContextMenu={e => e.preventDefault()}>
         <SettingsEditor
@@ -40,6 +54,11 @@ const App = () => {
             setKeepSeed(keepSeed);
             updateSettings(settings);
           }}
+          onHideSettings={() => setSettingsVisible(false)}
+          className={classNames({
+            'settings-visible': settingsVisible,
+            'settings-hidden': !settingsVisible,
+          })}
         />
         <PlaneDrawer
           camera={camera}
@@ -71,6 +90,7 @@ const useAppHook = () => {
   const [canvasWidth, setCanvasWidth] = useState(650);
   const [canvasHeight, setCanvasHeight] = useState(600);
   const [renderCount, setRenderCount] = useState(0);
+  const [settingsVisible, setSettingsVisible] = useState(true);
   const scene = useMemo(createNewScene, []);
   const camera = useMemo(createNewCamera, []);
 
@@ -143,6 +163,8 @@ const useAppHook = () => {
     camera,
     terrainMap,
     settings,
+    settingsVisible,
+    setSettingsVisible,
     updateSettings: (settings: PlaneDrawerSettings) => {
       updateSettings(settings);
       setRenderCount(renderCount + 1);

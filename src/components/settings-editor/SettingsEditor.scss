@@ -1,0 +1,60 @@
+.settings-editor {
+  display: flex;
+  flex-direction: column;
+  max-width: 30vw;
+  padding: 10px;
+  border-radius: 5px;
+  border: 2px solid aliceblue;
+  background-color: #323641;
+  box-shadow: 2px 2px 5px #222222;
+
+  transition: all 300ms;
+
+  .title-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .icon-buttons > * {
+      padding-left: 12px;
+      color: white;
+    }
+  }
+
+  .settings-title {
+    margin: 0;
+    margin-bottom: 16px;
+  }
+
+  .settings-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding-bottom: 8px;
+  }
+
+  & > div:not(div:last-child) {
+    padding: 12px 0;
+    border-bottom: 1px solid #e6e6fa50;
+  }
+
+  .plane-drawer-edit-section {
+    padding-bottom: 6px !important;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 12px;
+    .spacer {
+      flex: 1;
+    }
+  }
+}
+
+.settings-editor .value-editor:not(.value-editor:last-child),
+.buttons > input:not(input:last-child) {
+  margin-right: 8px;
+}

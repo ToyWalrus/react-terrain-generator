@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import PlaneDrawerSettings from '../../util/PlaneDrawerSettings';
 import ValueEditor from '../value-editor/ValueEditor';
+import ArrowIcon from '@material-ui/icons/ArrowForward';
 import { defaultSettings } from './Defaults';
-import './SettingsEditor.css';
+import './SettingsEditor.scss';
+import { IconButton } from '@material-ui/core';
+import classnames from 'classnames';
 
 interface ICanvasSize {
   canvasHeight: number;
@@ -13,6 +16,8 @@ interface ISettingsEditorProps {
   settings: PlaneDrawerSettings;
   onSubmitSettings: (newSettings: PlaneDrawerSettings, keepSeed: boolean) => void;
   onChangeCanvasSize: (newSize: ICanvasSize) => void;
+  onHideSettings?: () => void;
+  className?: string;
 }
 
 const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
@@ -20,8 +25,15 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
     useSettingsEditorContext(props);
 
   return (
-    <div className="settings-editor">
-      <h2 className="settings-title">Settings</h2>
+    <div className={classnames('settings-editor', props.className)}>
+      <div className="title-section">
+        <h2 className="settings-title">Settings</h2>
+        <div className="icon-buttons">
+          <IconButton onClick={() => props.onHideSettings && props.onHideSettings()}>
+            <ArrowIcon fontSize="large" />
+          </IconButton>
+        </div>
+      </div>
       <div className="canvas-edit-section settings-row">
         <ValueEditor
           step={20}
