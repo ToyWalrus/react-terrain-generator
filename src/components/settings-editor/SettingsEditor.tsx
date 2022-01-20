@@ -1,38 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import PlaneDrawerSettings from '../../util/PlaneDrawerSettings';
 import ValueEditor from '../value-editor/ValueEditor';
-import ArrowIcon from '@material-ui/icons/ArrowForward';
+import ArrowIcon from '@material-ui/icons/ChevronLeft';
 import { defaultSettings } from './Defaults';
-import './SettingsEditor.scss';
-import { IconButton } from '@material-ui/core';
+import { Drawer, IconButton } from '@material-ui/core';
 import classnames from 'classnames';
+import './SettingsEditor.scss';
 
 interface ICanvasSize {
   canvasHeight: number;
   canvasWidth: number;
 }
 
+interface ISettingsDrawerProps {
+  open: boolean;
+  onClose: () => void;
+}
+
 interface ISettingsEditorProps {
   settings: PlaneDrawerSettings;
   onSubmitSettings: (newSettings: PlaneDrawerSettings, keepSeed: boolean) => void;
   onChangeCanvasSize: (newSize: ICanvasSize) => void;
-  onHideSettings?: () => void;
   className?: string;
 }
 
-const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
+type SettingsProps = ICanvasSize & ISettingsEditorProps & Partial<ISettingsDrawerProps>;
+
+const SettingsEditor = (props: SettingsProps) => {
   const { settings, canvasWidth, canvasHeight, onCanvasWidthChanged, onCanvasHeightChanged, onSettingsChanged } =
     useSettingsEditorContext(props);
 
   return (
     <div className={classnames('settings-editor', props.className)}>
       <div className="title-section">
-        <h2 className="settings-title">Settings</h2>
-        <div className="icon-buttons">
-          <IconButton onClick={() => props.onHideSettings && props.onHideSettings()}>
+        {props.onClose && (
+          <IconButton onClick={props.onClose} className="close-button">
             <ArrowIcon fontSize="large" />
           </IconButton>
-        </div>
+        )}
+        <div className="settings-title">Settings</div>
       </div>
       <div className="canvas-edit-section settings-row">
         <ValueEditor
@@ -80,9 +86,9 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
             step={0.2}
             minValue={0.1}
             maxValue={1}
-            value={settings.persistance}
-            onValueChanged={v => onSettingsChanged({ persistance: v })}
-            label="Persistance"
+            value={settings.persistence}
+            onValueChanged={v => onSettingsChanged({ persistence: v })}
+            label="Persistence"
             tooltip='This setting affects the "smoothing" factor'
           />
         </div>
@@ -136,17 +142,26 @@ const SettingsEditor = (props: ISettingsEditorProps & ICanvasSize) => {
           />
         </div>
       </div>
+      <div className="spacer" />
       <div className="buttons">
         <input type="button" onClick={() => props.onSubmitSettings(settings, false)} value="Randomize Seed" />
         <span className="spacer" />
         <input type="button" onClick={() => onSettingsChanged(defaultSettings)} value="Default Settings" />
-        <input type="button" onClick={() => props.onSubmitSettings(settings, true)} value="Save" />
+        <input type="button" onClick={() => props.onSubmitSettings(settings, true)} value="Apply" />
       </div>
     </div>
   );
 };
 
-const useSettingsEditorContext = (props: ISettingsEditorProps & ICanvasSize) => {
+const SettingsDrawer = (props: SettingsProps) => {
+  return (
+    <Drawer variant="persistent" anchor="left" open={props.open} onClose={props.onClose} transitionDuration={300}>
+      <SettingsEditor {...props} />
+    </Drawer>
+  );
+};
+
+const useSettingsEditorContext = (props: SettingsProps) => {
   const [settings, setSettings] = useState(props.settings);
   const [canvasHeight, setCanvasHeight] = useState(props.canvasHeight);
   const [canvasWidth, setCanvasWidth] = useState(props.canvasWidth);
@@ -180,4 +195,5 @@ const useSettingsEditorContext = (props: ISettingsEditorProps & ICanvasSize) => 
   };
 };
 
-export default SettingsEditor;
+export default SettingsDrawer;
+export { SettingsEditor };

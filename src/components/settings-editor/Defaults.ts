@@ -5,7 +5,7 @@ export const defaultSettings: Partial<PlaneDrawerSettings> = {
   arrHeight: 50,
   arrWidth: 60,
   octaves: 7,
-  persistance: 0.5,
+  persistence: 0.5,
   heightAmplify: 200,
   scaleSize: 2.5,
   wireframe: false,

@@ -5,7 +5,7 @@ import MeshGenerator from '../../util/MeshGenerator';
 import PlaneDrawerSettings from '../../util/PlaneDrawerSettings';
 import CanvasRenderer from './CanvasRenderer';
 
-interface IPlaneDrawerProps {
+interface IPlaneRendererProps {
   scene: Scene;
   camera: Camera;
   terrainMap: TerrainMap;
@@ -14,7 +14,7 @@ interface IPlaneDrawerProps {
   canvasHeight: number;
 }
 
-const PlaneDrawer = (props: IPlaneDrawerProps) => {
+const PlaneRenderer = (props: IPlaneRendererProps) => {
   usePlaneDrawerContext(props);
 
   return (
@@ -30,7 +30,7 @@ const PlaneDrawer = (props: IPlaneDrawerProps) => {
   );
 };
 
-const usePlaneDrawerContext = ({ scene, terrainMap, settings }: IPlaneDrawerProps) => {
+const usePlaneDrawerContext = ({ scene, terrainMap, settings }: IPlaneRendererProps) => {
   useEffect(() => {
     scene.clear();
 
@@ -49,4 +49,4 @@ const usePlaneDrawerContext = ({ scene, terrainMap, settings }: IPlaneDrawerProp
   }, [terrainMap, settings, MeshGenerator.wireframeColor]);
 };
 
-export default PlaneDrawer;
+export default PlaneRenderer;

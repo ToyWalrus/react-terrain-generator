@@ -128,7 +128,7 @@ export default class NoiseGenerator {
     const { width, height } = this.dimensions;
 
     const smoothNoise: number[][][] = [];
-    const persistance = this.settings.persistance;
+    const persistance = this.settings.persistence;
 
     // Generate the smooth noise for each octave
     for (let i = 0; i < octaveCount; ++i) {

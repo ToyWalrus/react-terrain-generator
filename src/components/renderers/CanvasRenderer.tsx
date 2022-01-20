@@ -1,7 +1,7 @@
 import React from 'react';
+import * as THREE from 'three';
 import { Camera, Scene, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import * as THREE from 'three';
 
 interface ICanvasRendererProps {
   width: number;

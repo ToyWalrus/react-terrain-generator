@@ -1,16 +1,16 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { PerspectiveCamera, Scene } from 'three';
 import { defaultSeeds, defaultSettings } from './components/settings-editor/Defaults';
-import SettingsIcon from '@material-ui/icons/Settings';
-import classNames from 'classnames';
+import MenuIcon from '@material-ui/icons/Menu';
 import NoiseGenerator from './util/NoiseGenerator';
 import PlaneDrawerSettings from './util/PlaneDrawerSettings';
-import PlaneDrawer from './components/drawers/PlaneDrawer';
+import PlaneRenderer from './components/renderers/PlaneRenderer';
 import SettingsEditor from './components/settings-editor/SettingsEditor';
 import TerrainMap from './terrain/TerrainMap';
 import ReactTooltip from 'react-tooltip';
-import './App.scss';
+import classnames from 'classnames';
 import { IconButton } from '@material-ui/core';
+import './App.scss';
 
 const App = () => {
   const {
@@ -30,47 +30,48 @@ const App = () => {
 
   return (
     <div id="App">
-      <div className="title-row">
-        <div className="spacer" />
-        <div className="app-title">Procedural Terrain Generator</div>
-        <div className="spacer" />
-        <div>
-          <IconButton onClick={() => setSettingsVisible(true)}>
-            <SettingsIcon className="settings-button" fontSize="large" />
+      <main
+        className={classnames({
+          'settings-visible': settingsVisible,
+        })}
+      >
+        <div className="title-row">
+          <IconButton className="settings-button" onClick={() => setSettingsVisible(true)}>
+            <MenuIcon fontSize="large" />
           </IconButton>
+          <div className="spacer" />
+          <div className="app-title">Procedural Terrain Generator</div>
+          <div className="spacer" />
         </div>
-      </div>
-      <div className="spacer" />
-      <div id="ProceduralTerrainGenerator" onContextMenu={e => e.preventDefault()}>
-        <SettingsEditor
-          settings={settings}
-          canvasHeight={canvasHeight}
-          canvasWidth={canvasWidth}
-          onChangeCanvasSize={newSize => {
-            setCanvasHeight(newSize.canvasHeight);
-            setCanvasWidth(newSize.canvasWidth);
-          }}
-          onSubmitSettings={(settings, keepSeed) => {
-            setKeepSeed(keepSeed);
-            updateSettings(settings);
-          }}
-          onHideSettings={() => setSettingsVisible(false)}
-          className={classNames({
-            'settings-visible': settingsVisible,
-            'settings-hidden': !settingsVisible,
-          })}
-        />
-        <PlaneDrawer
-          camera={camera}
-          scene={scene}
-          canvasHeight={canvasHeight}
-          canvasWidth={canvasWidth}
-          terrainMap={terrainMap}
-          settings={settings}
-        />
-        <ReactTooltip className="tooltip-popup" backgroundColor="#282c34" border={true} multiline={true} />
-      </div>
-      <div className="spacer double" />
+        <div className="spacer" />
+        <div id="ProceduralTerrainGenerator" onContextMenu={e => e.preventDefault()}>
+          <PlaneRenderer
+            camera={camera}
+            scene={scene}
+            canvasHeight={canvasHeight}
+            canvasWidth={canvasWidth}
+            terrainMap={terrainMap}
+            settings={settings}
+          />
+        </div>
+        <div className="spacer double" />
+      </main>
+      <SettingsEditor
+        settings={settings}
+        canvasHeight={canvasHeight}
+        canvasWidth={canvasWidth}
+        onChangeCanvasSize={newSize => {
+          setCanvasHeight(newSize.canvasHeight);
+          setCanvasWidth(newSize.canvasWidth);
+        }}
+        onSubmitSettings={(settings, keepSeed) => {
+          setKeepSeed(keepSeed);
+          updateSettings(settings);
+        }}
+        open={settingsVisible}
+        onClose={() => setSettingsVisible(false)}
+      />
+      <ReactTooltip className="tooltip-popup" backgroundColor="#282c34" border={true} multiline={true} />
     </div>
   );
 };
@@ -82,8 +83,7 @@ const useAppHook = () => {
     return cam;
   };
   const createNewScene = () => {
-    const scene = new Scene();
-    return scene;
+    return new Scene();
   };
 
   const [randomSeeds, setRandomSeeds] = useState([] as string[]);

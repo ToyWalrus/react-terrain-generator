@@ -1,30 +1,33 @@
 .settings-editor {
   display: flex;
   flex-direction: column;
-  max-width: 30vw;
-  padding: 10px;
-  border-radius: 5px;
-  border: 2px solid aliceblue;
+  color: aliceblue;
   background-color: #323641;
-  box-shadow: 2px 2px 5px #222222;
+  height: 100%;
+  width: var(--settings-drawer-width);
+  padding: 0 10px 10px;
 
-  transition: all 300ms;
+  & > div:not(div:last-child, :first-child, .spacer) {
+    padding: 12px 0;
+    border-bottom: 1px solid #e6e6fa50;
+  }
+
+  .settings-title {
+    font-size: 2.5em;
+  }
 
   .title-section {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    padding-top: var(--header-top-padding);
 
-    .icon-buttons > * {
-      padding-left: 12px;
+    .close-button {
+      position: absolute;
+      left: 0;
       color: white;
     }
-  }
-
-  .settings-title {
-    margin: 0;
-    margin-bottom: 16px;
   }
 
   .settings-row {
@@ -32,11 +35,6 @@
     flex-direction: row;
     justify-content: space-evenly;
     padding-bottom: 8px;
-  }
-
-  & > div:not(div:last-child) {
-    padding: 12px 0;
-    border-bottom: 1px solid #e6e6fa50;
   }
 
   .plane-drawer-edit-section {
@@ -48,6 +46,7 @@
     flex-direction: row;
     justify-content: flex-end;
     margin-top: 12px;
+
     .spacer {
       flex: 1;
     }
