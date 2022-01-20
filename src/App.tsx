@@ -11,6 +11,7 @@ import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 import { IconButton } from '@material-ui/core';
 import './App.scss';
+import NoiseMapRenderer from './components/renderers/NoiseMapRenderer';
 
 const App = () => {
   const {
@@ -45,6 +46,14 @@ const App = () => {
         </div>
         <div className="spacer" />
         <div id="ProceduralTerrainGenerator" onContextMenu={e => e.preventDefault()}>
+          <NoiseMapRenderer
+            noiseMap={terrainMap.elevationMap}
+            updateCrosshairPosition={() => {}}
+            size={{
+              width: terrainMap.elevationMap.length * 2,
+              height: terrainMap.elevationMap.length > 0 ? terrainMap.elevationMap[0].length * 2 : 0,
+            }}
+          />
           <PlaneRenderer
             camera={camera}
             scene={scene}
@@ -90,7 +99,7 @@ const useAppHook = () => {
   const [canvasWidth, setCanvasWidth] = useState(650);
   const [canvasHeight, setCanvasHeight] = useState(600);
   const [renderCount, setRenderCount] = useState(0);
-  const [settingsVisible, setSettingsVisible] = useState(true);
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const scene = useMemo(createNewScene, []);
   const camera = useMemo(createNewCamera, []);
 

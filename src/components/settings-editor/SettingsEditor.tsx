@@ -7,7 +7,7 @@ import { Drawer, IconButton } from '@material-ui/core';
 import classnames from 'classnames';
 import './SettingsEditor.scss';
 
-interface ICanvasSize {
+export interface ICanvasSize {
   canvasHeight: number;
   canvasWidth: number;
 }

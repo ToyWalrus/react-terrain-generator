@@ -12,9 +12,13 @@ export default class TerrainMap {
   highestPoint: number;
   lowestPoint: number;
 
+  elevationMap: number[][];
+  temperatureMap?: number[][];
+  moistureMap?: number[][];
+
   constructor(elevationMap?: number[][], temperatureMap?: number[][], moistureMap?: number[][]) {
     this.map = [];
-    this.highestPoint = Number.NEGATIVE_INFINITY
+    this.highestPoint = Number.NEGATIVE_INFINITY;
     this.lowestPoint = Number.POSITIVE_INFINITY;
 
     const width = elevationMap ? elevationMap.length : 0;
@@ -34,6 +38,10 @@ export default class TerrainMap {
     ) {
       throw new Error('Given arrays must be of same dimensions for Terrain map');
     }
+
+    this.elevationMap = elevationMap || [];
+    this.temperatureMap = temperatureMap;
+    this.moistureMap = moistureMap;
 
     if (elevationMap) {
       for (let col = 0; col < width; ++col) {
