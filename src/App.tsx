@@ -12,6 +12,7 @@ import classnames from 'classnames';
 import { IconButton } from '@material-ui/core';
 import './App.scss';
 import NoiseMapRenderer from './components/renderers/NoiseMapRenderer';
+import DetailLayers from './components/detail-layers/DetailLayers';
 
 const App = () => {
   const {
@@ -46,14 +47,7 @@ const App = () => {
         </div>
         <div className="spacer" />
         <div id="ProceduralTerrainGenerator" onContextMenu={e => e.preventDefault()}>
-          <NoiseMapRenderer
-            noiseMap={terrainMap.elevationMap}
-            updateCrosshairPosition={() => {}}
-            size={{
-              width: terrainMap.elevationMap.length * 2,
-              height: terrainMap.elevationMap.length > 0 ? terrainMap.elevationMap[0].length * 2 : 0,
-            }}
-          />
+          <DetailLayers open={true} terrainMap={terrainMap} />
           <PlaneRenderer
             camera={camera}
             scene={scene}

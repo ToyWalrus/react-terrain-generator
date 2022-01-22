@@ -3,8 +3,11 @@ import { Color, Vector2 } from 'three';
 
 interface INoiseMapRendererProps {
   noiseMap: number[][];
-  updateCrosshairPosition: (p: Vector2) => void;
-  crosshairPosition?: Vector2;
+  updateCrosshairPosition: (p: Vector2 | undefined) => void;
+  crosshairPosition: Vector2 | undefined;
+  crosshairSize?: number;
+  crosshairThickness?: number;
+  crosshairColor?: Color;
   gradientColors?: {
     low: Color;
     high: Color;
@@ -21,8 +24,23 @@ const NoiseMapRenderer = (props: INoiseMapRendererProps) => {
     size: { width, height },
   } = useNoiseMapRendererHook(props);
 
+  const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (rect) {
+      const x = Math.round(e.clientX - rect.left);
+      const y = Math.round(e.clientY - rect.top);
+      props.updateCrosshairPosition(new Vector2(x, y));
+    }
+  };
+
   return (
-    <canvas ref={canvasRef} width={width} height={height}>
+    <canvas
+      ref={canvasRef}
+      width={width}
+      height={height}
+      onMouseMove={onMouseMove}
+      onMouseOut={() => props.updateCrosshairPosition(undefined)}
+    >
       <p>Browser does not support this feature</p>
     </canvas>
   );
@@ -38,6 +56,10 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
     low: new Color(0, 0, 0),
     high: new Color(1, 1, 1),
   };
+
+  const crosshairSize = props.crosshairSize === undefined ? 5 : props.crosshairSize;
+  const crosshairThickness = props.crosshairThickness === undefined ? 1 : props.crosshairThickness;
+  const crosshairColor = props.crosshairColor?.getHexString() || 'e62020';
 
   const w = canvasSize.width > 0 ? props.noiseMap.length / canvasSize.width : 0;
   const h = canvasSize.height > 0 && props.noiseMap.length > 0 ? props.noiseMap[0].length / canvasSize.height : 0;
@@ -59,8 +81,31 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
   };
 
   const getCanvasPointColor = (xIndex: number, yIndex: number): string => {
-    const pt = getCanvasPoint(xIndex, yIndex);
-    return '#' + getColorForValue(props.noiseMap[pt.x][pt.y]).getHexString();
+    let colorHexVal: string | undefined;
+    if (props.crosshairPosition) {
+      const { x, y } = props.crosshairPosition;
+      if (
+        xIndex < x + crosshairThickness &&
+        xIndex > x - crosshairThickness &&
+        yIndex < y + crosshairSize &&
+        yIndex > y - crosshairSize
+      ) {
+        colorHexVal = crosshairColor;
+      } else if (
+        yIndex < y + crosshairThickness &&
+        yIndex > y - crosshairThickness &&
+        xIndex < x + crosshairSize &&
+        xIndex > x - crosshairSize
+      ) {
+        colorHexVal = crosshairColor;
+      }
+    }
+
+    if (!colorHexVal) {
+      const pt = getCanvasPoint(xIndex, yIndex);
+      colorHexVal = getColorForValue(props.noiseMap[pt.x][pt.y]).getHexString();
+    }
+    return '#' + colorHexVal;
   };
 
   useEffect(() => {
@@ -80,7 +125,7 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
         }
       }
     }
-  }, [canvasRef, canvasSize.width, canvasSize.height, props.noiseMap]);
+  }, [canvasRef, canvasSize.width, canvasSize.height, props.noiseMap, props.crosshairPosition]);
 
   return { canvasRef, size: canvasSize };
 };
