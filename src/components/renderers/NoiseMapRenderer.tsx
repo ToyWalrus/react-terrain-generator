@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Color, Vector2 } from 'three';
 
 interface INoiseMapRendererProps {
@@ -48,6 +48,8 @@ const NoiseMapRenderer = (props: INoiseMapRendererProps) => {
 
 const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const offscreenCanvas = useRef(document.createElement('canvas'));
+
   const canvasSize = props.size || {
     width: props.noiseMap.length,
     height: props.noiseMap.length > 0 ? props.noiseMap[0].length : 0,
@@ -82,25 +84,6 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
 
   const getCanvasPointColor = (xIndex: number, yIndex: number): string => {
     let colorHexVal: string | undefined;
-    if (props.crosshairPosition) {
-      const { x, y } = props.crosshairPosition;
-      if (
-        xIndex < x + crosshairThickness &&
-        xIndex > x - crosshairThickness &&
-        yIndex < y + crosshairSize &&
-        yIndex > y - crosshairSize
-      ) {
-        colorHexVal = crosshairColor;
-      } else if (
-        yIndex < y + crosshairThickness &&
-        yIndex > y - crosshairThickness &&
-        xIndex < x + crosshairSize &&
-        xIndex > x - crosshairSize
-      ) {
-        colorHexVal = crosshairColor;
-      }
-    }
-
     if (!colorHexVal) {
       const pt = getCanvasPoint(xIndex, yIndex);
       colorHexVal = getColorForValue(props.noiseMap[pt.x][pt.y]).getHexString();
@@ -108,24 +91,65 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
     return '#' + colorHexVal;
   };
 
-  useEffect(() => {
-    if (canvasRef && canvasRef.current) {
+  const drawCrosshairs = () => {
+    if (canvasRef?.current && offscreenCanvas?.current) {
       const ctx = canvasRef.current.getContext('2d');
       if (ctx) {
-        if (props.noiseMap.length && props.noiseMap[0].length) {
-          for (let x = 0; x < canvasSize.width; ++x) {
-            for (let y = 0; y < canvasSize.height; ++y) {
-              ctx.fillStyle = getCanvasPointColor(x, y);
-              ctx.fillRect(x, y, 1, 1);
-            }
-          }
-        } else {
-          ctx.fillStyle = 'rgb(20, 20, 20)';
-          ctx.fillRect(0, 0, canvasSize.width, canvasSize.height);
+        ctx.drawImage(offscreenCanvas.current, 0, 0);
+
+        if (props.crosshairPosition) {
+          const { x, y } = props.crosshairPosition;
+          const xMin = Math.max(x - crosshairSize, 0);
+          const xMax = Math.min(x + crosshairSize, canvasSize.width);
+          const yMin = Math.max(y - crosshairSize, 0);
+          const yMax = Math.min(y + crosshairSize, canvasSize.height);
+
+          ctx.strokeStyle = '#' + crosshairColor;
+          ctx.lineWidth = crosshairThickness / 2;
+
+          ctx.beginPath();
+          ctx.moveTo(xMin, y);
+          ctx.lineTo(xMax, y);
+          ctx.closePath();
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(x, yMin);
+          ctx.lineTo(x, yMax);
+          ctx.closePath();
+          ctx.stroke();
         }
       }
     }
-  }, [canvasRef, canvasSize.width, canvasSize.height, props.noiseMap, props.crosshairPosition]);
+  };
+
+  // Draw noise map
+  useEffect(() => {
+    if (canvasSize.width === 0 || canvasSize.height === 0) return;
+
+    offscreenCanvas.current.width = canvasSize.width;
+    offscreenCanvas.current.height = canvasSize.height;
+    const ctx = offscreenCanvas.current.getContext('2d');
+
+    if (ctx) {
+      if (props.noiseMap.length && props.noiseMap[0].length) {
+        for (let x = 0; x < canvasSize.width; ++x) {
+          for (let y = 0; y < canvasSize.height; ++y) {
+            ctx.fillStyle = getCanvasPointColor(x, y);
+            ctx.fillRect(x, y, 1, 1);
+          }
+        }
+      } else {
+        ctx.fillStyle = 'rgb(20, 20, 20)';
+        ctx.fillRect(0, 0, canvasSize.width, canvasSize.height);
+      }
+    }
+
+    drawCrosshairs();
+  }, [canvasSize.width, canvasSize.height, props.noiseMap, props.gradientColors]);
+
+  // Draw crosshairs
+  useEffect(drawCrosshairs, [props.crosshairPosition]);
 
   return { canvasRef, size: canvasSize };
 };
