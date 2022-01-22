@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Color, Vector2 } from 'three';
 
 interface INoiseMapRendererProps {
   noiseMap: number[][];
   updateCrosshairPosition: (p: Vector2 | undefined) => void;
   crosshairPosition: Vector2 | undefined;
+  mapTitle: string;
   crosshairSize?: number;
   crosshairThickness?: number;
   crosshairColor?: Color;
@@ -22,27 +23,28 @@ const NoiseMapRenderer = (props: INoiseMapRendererProps) => {
   const {
     canvasRef,
     size: { width, height },
+    onMouseMove,
+    getFocusedValue,
   } = useNoiseMapRendererHook(props);
 
-  const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (rect) {
-      const x = Math.round(e.clientX - rect.left);
-      const y = Math.round(e.clientY - rect.top);
-      props.updateCrosshairPosition(new Vector2(x, y));
-    }
-  };
+  const hasFocusedValue = props.crosshairPosition !== undefined;
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={width}
-      height={height}
-      onMouseMove={onMouseMove}
-      onMouseOut={() => props.updateCrosshairPosition(undefined)}
-    >
-      <p>Browser does not support this feature</p>
-    </canvas>
+    <div className="noise-map">
+      <canvas
+        ref={canvasRef}
+        width={width}
+        height={height}
+        onMouseMove={onMouseMove}
+        onMouseOut={() => props.updateCrosshairPosition(undefined)}
+      >
+        <p>Browser does not support this feature</p>
+      </canvas>
+      <div className="noise-map-details">
+        <span className="map-title">{props.mapTitle}</span>
+        <span className="focused-value">{hasFocusedValue && `Value: ${getFocusedValue()}`}</span>
+      </div>
+    </div>
   );
 };
 
@@ -67,7 +69,7 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
   const h = canvasSize.height > 0 && props.noiseMap.length > 0 ? props.noiseMap[0].length / canvasSize.height : 0;
 
   const clamp = (val: number, max: number) => {
-    return Math.min(val, max);
+    return Math.max(0, Math.min(val, max));
   };
 
   const getCanvasPoint = (xIndex: number, yIndex: number): Vector2 => {
@@ -151,7 +153,26 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
   // Draw crosshairs
   useEffect(drawCrosshairs, [props.crosshairPosition]);
 
-  return { canvasRef, size: canvasSize };
+  const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (rect) {
+      const x = Math.round(e.clientX - rect.left);
+      const y = Math.round(e.clientY - rect.top);
+      props.updateCrosshairPosition(new Vector2(x, y));
+    }
+  };
+
+  const getFocusedValue = () => {
+    if (!props.crosshairPosition) return '-';
+
+    let { x, y } = props.crosshairPosition;
+    x = Math.round(clamp(x * w, props.noiseMap.length - 1));
+    y = Math.round(clamp(y * h, props.noiseMap[0].length - 1));
+
+    return props.noiseMap[x][y].toFixed(3);
+  };
+
+  return { canvasRef, size: canvasSize, onMouseMove, getFocusedValue };
 };
 
 export default NoiseMapRenderer;

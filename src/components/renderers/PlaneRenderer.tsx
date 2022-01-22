@@ -18,7 +18,7 @@ const PlaneRenderer = (props: IPlaneRendererProps) => {
   usePlaneDrawerContext(props);
 
   return (
-    <div>
+    <div className="plane-renderer">
       <CanvasRenderer
         scene={props.scene}
         camera={props.camera}

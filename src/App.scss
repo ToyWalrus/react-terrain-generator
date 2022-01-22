@@ -38,11 +38,19 @@ main {
 
 #ProceduralTerrainGenerator {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-evenly;
+  //justify-content: space-evenly;
   font-size: calc(10px + 2vmin);
   color: aliceblue;
+
+  .plane-renderer {
+    flex: 1;
+  }
+
+  #DetailLayers {
+    flex: 1;
+  }
 }
 
 #camera-controller {
@@ -55,7 +63,9 @@ main {
 }
 
 .canvas-renderer {
-  border: 2px solid aliceblue;
+  canvas {
+    border: 2px solid aliceblue;
+  }
 
   * {
     border-radius: 5px;
@@ -69,12 +79,4 @@ main {
   max-width: 250px;
   text-align: center;
   z-index: 9999 !important;
-}
-
-.spacer {
-  flex: 1;
-
-  &.double {
-    flex: 2;
-  }
 }

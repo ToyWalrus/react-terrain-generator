@@ -1,5 +1,29 @@
 #DetailLayers {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
+  row-gap: 16px;
+  min-width: 25vw;
+
+
+  .noise-map {
+    display: flex;
+    flex-direction: row;
+
+    .noise-map-details {
+      display: flex;
+      flex-direction: column;
+      margin-left: 8px;
+
+      .map-title {
+        font-size: 1.2em;
+      }
+
+      .focused-value {
+        font-weight: 300;
+        font-size: .8em;
+      }
+    }
+
+  }
 }

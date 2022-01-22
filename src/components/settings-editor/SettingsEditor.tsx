@@ -6,6 +6,7 @@ import { defaultSettings } from './Defaults';
 import { Drawer, IconButton } from '@material-ui/core';
 import classnames from 'classnames';
 import './SettingsEditor.scss';
+import Spacer from '../spacer/Spacer';
 
 export interface ICanvasSize {
   canvasHeight: number;
@@ -142,10 +143,10 @@ const SettingsEditor = (props: SettingsProps) => {
           />
         </div>
       </div>
-      <div className="spacer" />
+      <Spacer />
       <div className="buttons">
         <input type="button" onClick={() => props.onSubmitSettings(settings, false)} value="Randomize Seed" />
-        <span className="spacer" />
+        <Spacer />
         <input type="button" onClick={() => onSettingsChanged(defaultSettings)} value="Default Settings" />
         <input type="button" onClick={() => props.onSubmitSettings(settings, true)} value="Apply" />
       </div>

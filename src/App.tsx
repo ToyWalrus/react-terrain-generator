@@ -10,9 +10,9 @@ import TerrainMap from './terrain/TerrainMap';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 import { IconButton } from '@material-ui/core';
-import './App.scss';
-import NoiseMapRenderer from './components/renderers/NoiseMapRenderer';
 import DetailLayers from './components/detail-layers/DetailLayers';
+import Spacer from './components/spacer/Spacer';
+import './App.scss';
 
 const App = () => {
   const {
@@ -41,13 +41,13 @@ const App = () => {
           <IconButton className="settings-button" onClick={() => setSettingsVisible(true)}>
             <MenuIcon fontSize="large" />
           </IconButton>
-          <div className="spacer" />
+          <Spacer />
           <div className="app-title">Procedural Terrain Generator</div>
-          <div className="spacer" />
+          <Spacer />
         </div>
-        <div className="spacer" />
+        <Spacer />
         <div id="ProceduralTerrainGenerator" onContextMenu={e => e.preventDefault()}>
-          <DetailLayers open={true} terrainMap={terrainMap} />
+          <Spacer />
           <PlaneRenderer
             camera={camera}
             scene={scene}
@@ -56,8 +56,11 @@ const App = () => {
             terrainMap={terrainMap}
             settings={settings}
           />
+          <Spacer />
+          <DetailLayers open={true} terrainMap={terrainMap} />
+          <Spacer />
         </div>
-        <div className="spacer double" />
+        <Spacer double />
       </main>
       <SettingsEditor
         settings={settings}
