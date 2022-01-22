@@ -102,6 +102,7 @@ const SettingsEditor = (props: SettingsProps) => {
             value={settings.heightAmplify}
             onValueChanged={v => onSettingsChanged({ heightAmplify: v })}
             label="Height Amplification"
+            tooltip="For a cleaner look, reduce this value when lowering the Octave count, or raising Persistence"
           />
           <ValueEditor
             float
@@ -110,6 +111,7 @@ const SettingsEditor = (props: SettingsProps) => {
             value={settings.scaleSize}
             onValueChanged={v => onSettingsChanged({ scaleSize: v })}
             label="Scale"
+            tooltip="Grow or shrink the terrain proportionally"
           />
         </div>
         <div className="settings-row">
