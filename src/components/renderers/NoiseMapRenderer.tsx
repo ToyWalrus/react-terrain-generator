@@ -6,6 +6,7 @@ interface INoiseMapRendererProps {
   updateCrosshairPosition: (p: Vector2 | undefined) => void;
   crosshairPosition: Vector2 | undefined;
   mapTitle: string;
+  valueInterpreter: (val: number) => string;
   crosshairSize?: number;
   crosshairThickness?: number;
   crosshairColor?: Color;
@@ -25,6 +26,7 @@ const NoiseMapRenderer = (props: INoiseMapRendererProps) => {
     size: { width, height },
     onMouseMove,
     getFocusedValue,
+    getInterpretation,
   } = useNoiseMapRendererHook(props);
 
   const hasFocusedValue = props.crosshairPosition !== undefined;
@@ -43,6 +45,7 @@ const NoiseMapRenderer = (props: INoiseMapRendererProps) => {
       <div className="noise-map-details">
         <span className="map-title">{props.mapTitle}</span>
         <span className="focused-value">{hasFocusedValue && `Value: ${getFocusedValue()}`}</span>
+        <span className="focused-value">{hasFocusedValue && `Interpretation: ${getInterpretation()}`}</span>
       </div>
     </div>
   );
@@ -56,6 +59,11 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
     width: props.noiseMap.length,
     height: props.noiseMap.length > 0 ? props.noiseMap[0].length : 0,
   };
+  const mapSize = {
+    width: props.noiseMap.length,
+    height: props.noiseMap.length > 0 ? props.noiseMap[0].length : 0,
+  };
+
   const gradient = props.gradientColors || {
     low: new Color(0, 0, 0),
     high: new Color(1, 1, 1),
@@ -64,19 +72,6 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
   const crosshairSize = props.crosshairSize === undefined ? 5 : props.crosshairSize;
   const crosshairThickness = props.crosshairThickness === undefined ? 1 : props.crosshairThickness;
   const crosshairColor = props.crosshairColor?.getHexString() || 'e62020';
-
-  const w = canvasSize.width > 0 ? props.noiseMap.length / canvasSize.width : 0;
-  const h = canvasSize.height > 0 && props.noiseMap.length > 0 ? props.noiseMap[0].length / canvasSize.height : 0;
-
-  const clamp = (val: number, max: number) => {
-    return Math.max(0, Math.min(val, max));
-  };
-
-  const getCanvasPoint = (xIndex: number, yIndex: number): Vector2 => {
-    const xMax = props.noiseMap.length;
-    const yMax = xMax > 0 ? props.noiseMap[0].length : 1;
-    return new Vector2(clamp(Math.round(xIndex * w), xMax - 1), clamp(Math.round(yIndex * h), yMax - 1));
-  };
 
   const getColorForValue = (val: number): Color => {
     const c = new Color();
@@ -87,7 +82,7 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
   const getCanvasPointColor = (xIndex: number, yIndex: number): string => {
     let colorHexVal: string | undefined;
     if (!colorHexVal) {
-      const pt = getCanvasPoint(xIndex, yIndex);
+      const pt = canvasPointToMapPoint(new Vector2(xIndex, yIndex), canvasSize, mapSize);
       colorHexVal = getColorForValue(props.noiseMap[pt.x][pt.y]).getHexString();
     }
     return '#' + colorHexVal;
@@ -164,15 +159,31 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
 
   const getFocusedValue = () => {
     if (!props.crosshairPosition) return '-';
-
-    let { x, y } = props.crosshairPosition;
-    x = Math.round(clamp(x * w, props.noiseMap.length - 1));
-    y = Math.round(clamp(y * h, props.noiseMap[0].length - 1));
-
+    const { x, y } = canvasPointToMapPoint(props.crosshairPosition, canvasSize, mapSize);
     return props.noiseMap[x][y].toFixed(3);
   };
 
-  return { canvasRef, size: canvasSize, onMouseMove, getFocusedValue };
+  const getInterpretation = () => {
+    const val = getFocusedValue();
+    if (val === '-') return '-';
+    return props.valueInterpreter(Number.parseFloat(val));
+  };
+
+  return { canvasRef, size: canvasSize, onMouseMove, getFocusedValue, getInterpretation };
+};
+
+interface Size {
+  width: number;
+  height: number;
+}
+
+export const canvasPointToMapPoint = (canvasPoint: Vector2, canvasSize: Size, mapSize: Size): Vector2 => {
+  const w = canvasSize.width > 0 ? mapSize.width / canvasSize.width : 0;
+  const h = canvasSize.height > 0 ? mapSize.height / canvasSize.height : 0;
+  return new Vector2(
+    Math.max(Math.min(Math.round(canvasPoint.x * w), mapSize.width - 1), 0),
+    Math.max(Math.min(Math.round(canvasPoint.y * h), mapSize.height - 1), 0),
+  );
 };
 
 export default NoiseMapRenderer;

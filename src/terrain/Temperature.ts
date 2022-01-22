@@ -1,10 +1,10 @@
 enum Temperature {
-  Freezing,
-  Cold,
-  Average,
-  Warm,
-  Hot,
-  Scorched,
+  Freezing = 'Freezing',
+  Cold = 'Cold',
+  Temperate = 'Temperate',
+  Warm = 'Warm',
+  Hot = 'Hot',
+  Scorched = 'Scorched',
 }
 
 export default Temperature;

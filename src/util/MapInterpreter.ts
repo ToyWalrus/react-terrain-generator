@@ -16,18 +16,18 @@ const MOUNTAIN_LEVEL = 0.9;
 // Moisture cut-offs
 const BARE = 0.15;
 const DRY = 0.3;
-const TEMPERATE = 0.55;
+const DEWY = 0.55;
 const MOIST = 0.7;
 const HUMID = 0.85;
 
 // Temperature cut-offs
 const FREEZING = 0.1;
 const COLD = 0.4;
-const AVERAGE = 0.65;
+const TEMPERATE = 0.65;
 const WARM = 0.75;
 const HOT = 0.9;
 
-const getElevation = (e: number): Elevation => {
+export const getElevation = (e: number): Elevation => {
   if (e < SEA_LEVEL) return Elevation.SeaLevel;
   if (e < LOW_LEVEL) return Elevation.Low;
   if (e < VALLEY_LEVEL) return Elevation.Valley;
@@ -37,19 +37,19 @@ const getElevation = (e: number): Elevation => {
   else return Elevation.Peak;
 };
 
-const getTemperature = (t: number): Temperature => {
+export const getTemperature = (t: number): Temperature => {
   if (t < FREEZING) return Temperature.Freezing;
   if (t < COLD) return Temperature.Cold;
-  if (t < AVERAGE) return Temperature.Average;
+  if (t < TEMPERATE) return Temperature.Temperate;
   if (t < WARM) return Temperature.Warm;
   if (t < HOT) return Temperature.Hot;
   else return Temperature.Scorched;
 };
 
-const getMoisture = (m: number): Moisture => {
+export const getMoisture = (m: number): Moisture => {
   if (m < BARE) return Moisture.Bare;
   if (m < DRY) return Moisture.Dry;
-  if (m < TEMPERATE) return Moisture.Average;
+  if (m < DEWY) return Moisture.Dewy;
   if (m < MOIST) return Moisture.Moist;
   if (m < HUMID) return Moisture.Humid;
   else return Moisture.Wet;
@@ -87,13 +87,13 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
             default:
               return Biome.Taiga;
           }
-        case Temperature.Average:
+        case Temperature.Temperate:
           switch (getMoisture(moisture)) {
             case Moisture.Bare:
               return Biome.Desert;
             case Moisture.Dry:
               return Biome.Plains;
-            case Moisture.Average:
+            case Moisture.Dewy:
               return Biome.Grassland;
             case Moisture.Moist:
               return Biome.Forest;
@@ -105,7 +105,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
             case Moisture.Bare:
             case Moisture.Dry:
               return Biome.Desert;
-            case Moisture.Average:
+            case Moisture.Dewy:
             case Moisture.Moist:
               return Biome.Forest;
             default:
@@ -117,7 +117,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
               return Biome.ScorchedDesert;
             case Moisture.Dry:
               return Biome.Desert;
-            case Moisture.Average:
+            case Moisture.Dewy:
               return Biome.TemperateDesert;
             case Moisture.Moist:
               return Biome.Shrubland;
@@ -143,19 +143,19 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
             case Moisture.Bare:
             case Moisture.Dry:
               return Biome.Tundra;
-            case Moisture.Average:
+            case Moisture.Dewy:
               return Biome.Taiga;
             default:
               return Biome.Snow;
           }
-        case Temperature.Average:
+        case Temperature.Temperate:
         case Temperature.Warm:
           switch (getMoisture(moisture)) {
             case Moisture.Bare:
               return Biome.Desert;
             case Moisture.Dry:
               return Biome.Plains;
-            case Moisture.Average:
+            case Moisture.Dewy:
               return Biome.Grassland;
             case Moisture.Moist:
               return Biome.Shrubland;
@@ -168,7 +168,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
               return Biome.ScorchedDesert;
             case Moisture.Dry:
               return Biome.Desert;
-            case Moisture.Average:
+            case Moisture.Dewy:
               return Biome.Grassland;
             case Moisture.Moist:
               return Biome.Shrubland;
@@ -191,7 +191,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
           switch (getMoisture(moisture)) {
             case Moisture.Bare:
             case Moisture.Dry:
-            case Moisture.Average:
+            case Moisture.Dewy:
               return Biome.Tundra;
             default:
               return Biome.Snow;
@@ -204,7 +204,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
             default:
               return Biome.Snow;
           }
-        case Temperature.Average:
+        case Temperature.Temperate:
           switch (getMoisture(moisture)) {
             case Moisture.Bare:
             case Moisture.Dry:
@@ -217,7 +217,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
             case Moisture.Bare:
             case Moisture.Dry:
               return Biome.Desert;
-            case Moisture.Average:
+            case Moisture.Dewy:
             case Moisture.Moist:
               return Biome.Forest;
             default:
@@ -228,7 +228,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
             case Moisture.Bare:
             case Moisture.Dry:
               return Biome.ScorchedDesert;
-            case Moisture.Average:
+            case Moisture.Dewy:
               return Biome.Forest;
             default:
               return Biome.RainForest;
@@ -275,7 +275,7 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
       switch (getTemperature(temperature)) {
         case Temperature.Freezing:
         case Temperature.Cold:
-        case Temperature.Average:
+        case Temperature.Temperate:
           return Biome.Snow;
         default:
           switch (getMoisture(moisture)) {
