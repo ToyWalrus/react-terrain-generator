@@ -13,6 +13,7 @@ import { IconButton } from '@material-ui/core';
 import DetailLayers from './components/detail-layers/DetailLayers';
 import Spacer from './components/spacer/Spacer';
 import './App.scss';
+import Instructions from './components/instructions/Instructions';
 
 const App = () => {
   const {
@@ -64,6 +65,7 @@ const App = () => {
           {detailsVisible && <Spacer />}
         </div>
         <Spacer double />
+        <Instructions />
       </main>
       <SettingsEditor
         settings={settings}
