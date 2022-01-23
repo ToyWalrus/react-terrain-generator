@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Color, Vector2 } from 'three';
 
 interface INoiseMapRendererProps {
@@ -53,7 +53,10 @@ const NoiseMapRenderer = (props: INoiseMapRendererProps) => {
 
 const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const offscreenCanvas = useRef(document.createElement('canvas'));
+  const offscreenCanvas = useMemo(() => {
+    console.log('create canvas');
+    return document.createElement('canvas');
+  }, []);
 
   const canvasSize = props.size || {
     width: props.noiseMap.length,
@@ -89,10 +92,10 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
   };
 
   const drawCrosshairs = () => {
-    if (canvasRef?.current && offscreenCanvas?.current) {
+    if (canvasRef?.current && offscreenCanvas) {
       const ctx = canvasRef.current.getContext('2d');
       if (ctx) {
-        ctx.drawImage(offscreenCanvas.current, 0, 0);
+        ctx.drawImage(offscreenCanvas, 0, 0);
 
         if (props.crosshairPosition) {
           const { x, y } = props.crosshairPosition;
@@ -124,9 +127,9 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
   useEffect(() => {
     if (canvasSize.width === 0 || canvasSize.height === 0) return;
 
-    offscreenCanvas.current.width = canvasSize.width;
-    offscreenCanvas.current.height = canvasSize.height;
-    const ctx = offscreenCanvas.current.getContext('2d');
+    offscreenCanvas.width = canvasSize.width;
+    offscreenCanvas.height = canvasSize.height;
+    const ctx = offscreenCanvas.getContext('2d');
 
     if (ctx) {
       if (props.noiseMap.length && props.noiseMap[0].length) {

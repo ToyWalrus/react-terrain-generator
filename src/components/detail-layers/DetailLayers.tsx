@@ -5,6 +5,7 @@ import TerrainMap from '../../terrain/TerrainMap';
 import { getBiome, getElevation, getMoisture, getTemperature } from '../../util/MapInterpreter';
 import Biome from '../../terrain/Biome';
 import './DetailLayers.scss';
+import classnames from 'classnames';
 
 interface IDetailLayersProps {
   open: boolean;
@@ -16,7 +17,7 @@ const DetailLayers = (props: IDetailLayersProps) => {
   const { focusedPosition, setFocusedPosition, noiseMapSize, currentBiome } = useDetailLayersHook(props);
 
   return (
-    <div id="DetailLayers">
+    <div id="DetailLayers" className={classnames({ hidden: !props.open })}>
       <NoiseMapRenderer
         noiseMap={props.terrainMap.elevationMap}
         mapTitle="Elevation"

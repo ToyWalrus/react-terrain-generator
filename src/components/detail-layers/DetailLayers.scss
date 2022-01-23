@@ -4,6 +4,12 @@
   justify-content: space-around;
   row-gap: 16px;
   min-width: 28vw;
+  opacity: 1;
+  transition: opacity 200ms ease-out;
+
+  &.hidden {
+    opacity: 0;
+  }
 
   .noise-map {
     display: flex;

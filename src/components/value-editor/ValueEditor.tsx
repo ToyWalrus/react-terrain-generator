@@ -1,5 +1,6 @@
 import React from 'react';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
+import classnames from 'classnames';
 import './ValueEditor.scss';
 
 interface IValueEditorProps {
@@ -12,6 +13,7 @@ interface IValueEditorProps {
   minValue?: number;
   className?: string;
   tooltip?: string;
+  disabled?: boolean;
 }
 
 const ValueEditor = ({
@@ -24,6 +26,7 @@ const ValueEditor = ({
   maxValue,
   minValue,
   step,
+  disabled,
 }: IValueEditorProps) => {
   let inputType = 'text';
   if (typeof value === 'number') {
@@ -63,12 +66,7 @@ const ValueEditor = ({
 
   return (
     <div className={'value-editor' + (className ? ` ${className}` : '')}>
-      {label && (
-        <div className="value-label">
-          {label}
-          {tooltip && <InfoIcon className="info-icon" fontSize="small" data-tip={tooltip} />}
-        </div>
-      )}
+      {label && <Label label={label} disabled={disabled} tooltip={tooltip} />}
       <input
         type={inputType}
         value={value}
@@ -76,16 +74,65 @@ const ValueEditor = ({
         onSubmit={onChange}
         onChange={onChange}
         onBlur={() => validateInput(value)}
+        disabled={disabled}
       />
     </div>
   );
 };
 
-ValueEditor.Checkbox = ({ label, value, onValueChanged, className }: IValueEditorProps) => {
+ValueEditor.Checkbox = ({
+  label,
+  value,
+  onValueChanged,
+  className,
+  tooltip,
+  disabled,
+  inverseTooltipVisibility,
+}: IValueEditorProps & { inverseTooltipVisibility?: boolean }) => {
   return (
-    <div className={'value-editor checkbox-editor' + (className ? ` ${className}` : '')}>
-      <div className={'checkbox ' + (!!value ? 'checked' : 'unchecked')} onClick={() => onValueChanged(!value)} />
-      {label && <span className="value-label">{label}</span>}
+    <div className={classnames('value-editor checkbox-editor', className)}>
+      <div
+        className={classnames('checkbox', {
+          checked: !!value,
+          unchecked: !value,
+          disabled,
+        })}
+        onClick={() => {
+          if (!disabled) {
+            onValueChanged(!value);
+          }
+        }}
+      />
+      {label && (
+        <Label
+          label={label}
+          disabled={disabled}
+          tooltip={tooltip}
+          inverseTooltipVisibility={inverseTooltipVisibility}
+        />
+      )}
+    </div>
+  );
+};
+
+interface ILabelProps {
+  disabled: boolean | undefined;
+  label: string | undefined;
+  tooltip: string | undefined;
+  inverseTooltipVisibility?: boolean;
+}
+
+const Label = ({ disabled, label, tooltip, inverseTooltipVisibility }: ILabelProps) => {
+  return (
+    <div className={classnames('value-label', { disabled })}>
+      <span className="label">{label}</span>
+      {tooltip && (
+        <InfoIcon
+          className={classnames('info-icon', { visible: inverseTooltipVisibility ? disabled : !disabled })}
+          fontSize="small"
+          data-tip={tooltip}
+        />
+      )}
     </div>
   );
 };

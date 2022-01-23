@@ -22,14 +22,23 @@ interface ISettingsEditorProps {
   settings: PlaneDrawerSettings;
   onSubmitSettings: (newSettings: PlaneDrawerSettings, keepSeed: boolean) => void;
   onChangeCanvasSize: (newSize: ICanvasSize) => void;
+  onToggleDetailDisplay: (visible: boolean) => void;
   className?: string;
 }
 
 type SettingsProps = ICanvasSize & ISettingsEditorProps & Partial<ISettingsDrawerProps>;
 
 const SettingsEditor = (props: SettingsProps) => {
-  const { settings, canvasWidth, canvasHeight, onCanvasWidthChanged, onCanvasHeightChanged, onSettingsChanged } =
-    useSettingsEditorContext(props);
+  const {
+    settings,
+    canvasWidth,
+    canvasHeight,
+    detailsVisible,
+    setDetailsVisible,
+    onCanvasWidthChanged,
+    onCanvasHeightChanged,
+    onSettingsChanged,
+  } = useSettingsEditorContext(props);
 
   return (
     <div className={classnames('settings-editor', props.className)}>
@@ -117,6 +126,7 @@ const SettingsEditor = (props: SettingsProps) => {
         <div className="settings-row">
           <ValueEditor.Checkbox
             value={settings.autoRotate}
+            disabled={detailsVisible}
             onValueChanged={v => {
               onSettingsChanged({ autoRotate: v });
               props.onSubmitSettings(
@@ -128,6 +138,8 @@ const SettingsEditor = (props: SettingsProps) => {
               );
             }}
             label="Auto Rotate"
+            inverseTooltipVisibility
+            tooltip="Auto-rotate unavailable while displaying details"
           />
           <ValueEditor.Checkbox
             value={settings.wireframe}
@@ -142,6 +154,23 @@ const SettingsEditor = (props: SettingsProps) => {
               );
             }}
             label="Wireframe Only"
+          />
+        </div>
+        <div className="settings-row">
+          <ValueEditor.Checkbox
+            value={detailsVisible}
+            onValueChanged={v => {
+              setDetailsVisible(v);
+              props.onToggleDetailDisplay(v);
+              props.onSubmitSettings(
+                new PlaneDrawerSettings({
+                  ...props.settings,
+                  autoRotate: v ? false : settings.autoRotate,
+                }),
+                true,
+              );
+            }}
+            label="Display Details"
           />
         </div>
       </div>
@@ -166,6 +195,7 @@ const SettingsDrawer = (props: SettingsProps) => {
 
 const useSettingsEditorContext = (props: SettingsProps) => {
   const [settings, setSettings] = useState(props.settings);
+  const [detailsVisible, setDetailsVisible] = useState(false);
   const [canvasHeight, setCanvasHeight] = useState(props.canvasHeight);
   const [canvasWidth, setCanvasWidth] = useState(props.canvasWidth);
 
@@ -192,6 +222,8 @@ const useSettingsEditorContext = (props: SettingsProps) => {
     settings,
     canvasHeight,
     canvasWidth,
+    detailsVisible,
+    setDetailsVisible,
     onCanvasHeightChanged,
     onCanvasWidthChanged,
     onSettingsChanged,

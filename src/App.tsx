@@ -20,6 +20,8 @@ const App = () => {
     settings,
     terrainMap,
     settingsVisible,
+    detailsVisible,
+    setDetailsVisible,
     setSettingsVisible,
     updateSettings,
     canvasHeight,
@@ -56,9 +58,9 @@ const App = () => {
             terrainMap={terrainMap}
             settings={settings}
           />
-          <Spacer />
-          <DetailLayers open={true} terrainMap={terrainMap} />
-          <Spacer />
+          {detailsVisible && <Spacer />}
+          <DetailLayers open={detailsVisible} terrainMap={terrainMap} />
+          {detailsVisible && <Spacer />}
         </div>
         <Spacer double />
       </main>
@@ -74,6 +76,7 @@ const App = () => {
           setKeepSeed(keepSeed);
           updateSettings(settings);
         }}
+        onToggleDetailDisplay={setDetailsVisible}
         open={settingsVisible}
         onClose={() => setSettingsVisible(false)}
       />
@@ -97,6 +100,7 @@ const useAppHook = () => {
   const [canvasHeight, setCanvasHeight] = useState(600);
   const [renderCount, setRenderCount] = useState(0);
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const [detailsVisible, setDetailsVisible] = useState(false);
   const scene = useMemo(createNewScene, []);
   const camera = useMemo(createNewCamera, []);
 
@@ -170,6 +174,8 @@ const useAppHook = () => {
     terrainMap,
     settings,
     settingsVisible,
+    detailsVisible,
+    setDetailsVisible,
     setSettingsVisible,
     updateSettings: (settings: PlaneDrawerSettings) => {
       updateSettings(settings);
