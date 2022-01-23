@@ -38,6 +38,7 @@ const SettingsEditor = (props: SettingsProps) => {
     onCanvasWidthChanged,
     onCanvasHeightChanged,
     onSettingsChanged,
+    onRerenderTerrain,
   } = useSettingsEditorContext(props);
 
   return (
@@ -93,13 +94,13 @@ const SettingsEditor = (props: SettingsProps) => {
           />
           <ValueEditor
             float
-            step={0.2}
+            step={0.1}
             minValue={0.1}
             maxValue={1}
             value={settings.persistence}
             onValueChanged={v => onSettingsChanged({ persistence: v })}
             label="Persistence"
-            tooltip='This setting affects the "smoothing" factor'
+            tooltip='This setting affects the "smoothing" factor; a lower value is more smooth'
           />
         </div>
       </div>
@@ -176,10 +177,10 @@ const SettingsEditor = (props: SettingsProps) => {
       </div>
       <Spacer />
       <div className="buttons">
-        <input type="button" onClick={() => props.onSubmitSettings(settings, false)} value="Randomize Seed" />
+        <input type="button" onClick={() => onRerenderTerrain(false)} value="Randomize Seed" />
         <Spacer />
         <input type="button" onClick={() => onSettingsChanged(defaultSettings)} value="Default Settings" />
-        <input type="button" onClick={() => props.onSubmitSettings(settings, true)} value="Apply" />
+        <input type="button" onClick={() => onRerenderTerrain(true)} value="Apply" />
       </div>
     </div>
   );
@@ -218,11 +219,26 @@ const useSettingsEditorContext = (props: SettingsProps) => {
     setSettings(updated);
   };
 
+  const onRerenderTerrain = (keepSeed: boolean) => {
+    if (!detailsVisible) {
+      props.onSubmitSettings(settings, keepSeed);
+    } else {
+      props.onSubmitSettings(
+        {
+          ...settings,
+          autoRotate: false,
+        },
+        keepSeed,
+      );
+    }
+  };
+
   return {
     settings,
     canvasHeight,
     canvasWidth,
     detailsVisible,
+    onRerenderTerrain,
     setDetailsVisible,
     onCanvasHeightChanged,
     onCanvasWidthChanged,

@@ -35,6 +35,7 @@ const App = () => {
   return (
     <div id="App">
       <main
+        onContextMenu={e => e.preventDefault()}
         className={classnames({
           'settings-visible': settingsVisible,
         })}
@@ -48,7 +49,7 @@ const App = () => {
           <Spacer />
         </div>
         <Spacer />
-        <div id="ProceduralTerrainGenerator" onContextMenu={e => e.preventDefault()}>
+        <div id="ProceduralTerrainGenerator">
           <Spacer />
           <PlaneRenderer
             camera={camera}
@@ -88,7 +89,7 @@ const App = () => {
 const useAppHook = () => {
   const createNewCamera = () => {
     const cam = new PerspectiveCamera(50, canvasWidth / canvasHeight);
-    cam.position.set(0, 200, -100);
+    cam.position.set(0, 200, 100);
     return cam;
   };
   const createNewScene = () => {
