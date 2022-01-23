@@ -118,7 +118,6 @@ const getBiome = (elevation: number, temperature: number, moisture: number): Bio
             case Moisture.Dry:
               return Biome.Desert;
             case Moisture.Dewy:
-              return Biome.TemperateDesert;
             case Moisture.Moist:
               return Biome.Shrubland;
             default:

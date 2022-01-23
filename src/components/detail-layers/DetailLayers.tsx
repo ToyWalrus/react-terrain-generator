@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Vector2 } from 'three';
+import { Color, Vector2 } from 'three';
 import NoiseMapRenderer, { canvasPointToMapPoint } from '../renderers/NoiseMapRenderer';
 import TerrainMap from '../../terrain/TerrainMap';
 import { getBiome, getElevation, getMoisture, getTemperature } from '../../util/MapInterpreter';
@@ -29,6 +29,10 @@ const DetailLayers = (props: IDetailLayersProps) => {
         <NoiseMapRenderer
           noiseMap={props.terrainMap.temperatureMap}
           mapTitle="Temperature"
+          gradientColors={{
+            low: new Color('#51ebed'),
+            high: new Color('#db582c'),
+          }}
           valueInterpreter={getTemperature}
           updateCrosshairPosition={setFocusedPosition}
           crosshairPosition={focusedPosition}
@@ -39,6 +43,10 @@ const DetailLayers = (props: IDetailLayersProps) => {
         <NoiseMapRenderer
           noiseMap={props.terrainMap.moistureMap}
           mapTitle="Moisture"
+          gradientColors={{
+            low: new Color('#d4d1e3'),
+            high: new Color('#223ce3'),
+          }}
           valueInterpreter={getMoisture}
           updateCrosshairPosition={setFocusedPosition}
           crosshairPosition={focusedPosition}
