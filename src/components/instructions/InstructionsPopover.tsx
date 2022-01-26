@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
-import MouseLeft from './mouse-left-button.png';
-import MouseMiddle from './mouse-middle-button.png';
-import MouseRight from './mouse-right-button.png';
+import React, { useState } from 'react';
+import MouseLeft from './mouse-images/mouse-left-button.png';
+import MouseMiddle from './mouse-images/mouse-middle-button.png';
+import MouseRight from './mouse-images/mouse-right-button.png';
 import { Popover } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import './InstructionsPopover.scss';
@@ -38,7 +38,7 @@ const InstructionRow = ({ image, text }: IInstructionRowProps) => {
 };
 
 const InstructionsPopover = () => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setAnchorEl(event.currentTarget);
