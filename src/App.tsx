@@ -12,8 +12,8 @@ import classnames from 'classnames';
 import { IconButton } from '@material-ui/core';
 import DetailLayers from './components/detail-layers/DetailLayers';
 import Spacer from './components/spacer/Spacer';
+import InstructionsPopover from './components/instructions/InstructionsPopover';
 import './App.scss';
-import Instructions from './components/instructions/Instructions';
 
 const App = () => {
   const {
@@ -48,6 +48,7 @@ const App = () => {
           <Spacer />
           <div className="app-title">Procedural Terrain Generator</div>
           <Spacer />
+          <InstructionsPopover />
         </div>
         <Spacer />
         <div id="ProceduralTerrainGenerator">
@@ -65,7 +66,6 @@ const App = () => {
           {detailsVisible && <Spacer />}
         </div>
         <Spacer double />
-        <Instructions />
       </main>
       <SettingsEditor
         settings={settings}

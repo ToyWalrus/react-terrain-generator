@@ -1,0 +1,39 @@
+#InstructionsIcon {
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.instructions {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  padding: 10px 10px 15px 15px; // TRBL
+  border-radius: 5px;
+  border: 2px solid var(--text-color);
+  color: var(--text-color);
+  background-color: #202227;
+
+  .instruction-preface {
+    font-size: 1.5em;
+    font-weight: 500;
+  }
+
+  .instruction-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .instruction-text {
+      font-style: italic;
+      font-size: 1.2em;
+      font-weight: 500;
+    }
+
+    .instruction-image {
+      width: 80px;
+      height: 80px;
+      user-select: none;
+    }
+  }
+}

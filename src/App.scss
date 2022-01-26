@@ -1,3 +1,7 @@
+:root {
+  --text-color: aliceblue;
+}
+
 #App {
   background-color: #282c34;
 
@@ -8,19 +12,22 @@
     padding-top: var(--header-top-padding);
 
     .settings-button {
-      color: white;
+      color: var(--text-color);
       position: absolute;
       left: 40px;
     }
 
     .app-title {
-      color: white;
+      color: var(--text-color);
       text-align: center;
       font-size: 3em;
       font-weight: bold;
     }
-  }
 
+    #InstructionsIcon {
+      margin-right: 40px;
+    }
+  }
 }
 
 main {
@@ -32,7 +39,7 @@ main {
   transition: margin-left 300ms ease-in-out;
 
   &.settings-visible {
-    margin-left: var(--settings-drawer-width)
+    margin-left: var(--settings-drawer-width);
   }
 }
 
@@ -42,7 +49,7 @@ main {
   align-items: center;
   //justify-content: space-evenly;
   font-size: calc(10px + 2vmin);
-  color: aliceblue;
+  color: var(--text-color);
 
   .plane-renderer {
     flex: 1;
@@ -64,7 +71,7 @@ main {
 
 .canvas-renderer {
   canvas {
-    border: 2px solid aliceblue;
+    border: 2px solid var(--text-color);
   }
 
   * {
