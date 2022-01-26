@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import MouseLeft from './mouse-images/mouse-left-button.png';
 import MouseMiddle from './mouse-images/mouse-middle-button.png';
 import MouseRight from './mouse-images/mouse-right-button.png';
-import { Popover } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
+import classNames from 'classnames';
 import './InstructionsPopover.scss';
 
 const Instructions = () => {
@@ -38,37 +38,63 @@ const InstructionRow = ({ image, text }: IInstructionRowProps) => {
 };
 
 const InstructionsPopover = () => {
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const [popoverRect, setPopoverRect] = useState<DOMRect | null>(null);
+  const [isPinned, setPinned] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    setAnchorEl(event.currentTarget);
+  const popoverSizeNeedsSetting = popoverRect === null;
+
+  const closedStyle = {
+    opacity: 0,
+    left: (anchorRect?.left || 0) - (popoverRect?.width || 0),
+    top: anchorRect?.bottom || 0,
+    transform: 'scale(0)',
   };
 
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
+  const openStyle = {
+    ...closedStyle,
+    opacity: 1,
+    transform: 'scale(1)',
+  };
+
+  const setRectByRef = (needsSetting: boolean, setFn: (d: DOMRect) => void) => {
+    return (r: HTMLDivElement | null) => {
+      if (needsSetting) {
+        const rect = r?.getBoundingClientRect();
+        if (rect) {
+          setFn(rect);
+        }
+      }
+    };
   };
 
   return (
     <>
-      <div id="InstructionsIcon" onClick={handlePopoverOpen}>
+      <div
+        id="InstructionsIcon"
+        className={classNames({
+          pinned: isPinned,
+        })}
+        onMouseOver={() => setOpen(true)}
+        onMouseLeave={() => {
+          if (!isPinned) setOpen(false);
+        }}
+        onClick={() => setPinned(p => !p)}
+        ref={setRectByRef(anchorRect === null, setAnchorRect)}
+      >
         <InfoIcon fontSize="large" />
       </div>
-      <Popover
-        open={!!anchorEl}
-        anchorEl={anchorEl}
-        onClose={handlePopoverClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        disableRestoreFocus
+      <div
+        id="InstructionsPopover"
+        className={classNames({
+          pinned: isPinned,
+        })}
+        ref={setRectByRef(popoverRect === null, setPopoverRect)}
+        style={popoverSizeNeedsSetting ? { top: -1000 } : open ? openStyle : closedStyle}
       >
         <Instructions />
-      </Popover>
+      </div>
     </>
   );
 };

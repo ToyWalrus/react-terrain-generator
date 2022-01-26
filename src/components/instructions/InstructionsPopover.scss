@@ -1,17 +1,24 @@
+$curve: cubic-bezier(0.4, 0, 0.2, 1);
+$pinned-color: #70a9ef;
+$unpinned-color: var(--text-color);
+$anim-time: 200ms;
+
 #InstructionsIcon {
-  color: var(--text-color);
   cursor: pointer;
+  color: $unpinned-color;
+  transition: color 200ms;
+
+  &.pinned {
+    color: $pinned-color;
+  }
 }
 
 .instructions {
   display: flex;
   flex-direction: column;
   row-gap: 5px;
-  padding: 10px 10px 15px 15px; // TRBL
   border-radius: 5px;
-  border: 2px solid var(--text-color);
   color: var(--text-color);
-  background-color: #202227;
 
   .instruction-preface {
     font-size: 1.5em;
@@ -27,7 +34,6 @@
     .instruction-text {
       font-style: italic;
       font-size: 1.2em;
-      font-weight: 500;
     }
 
     .instruction-image {
@@ -35,5 +41,23 @@
       height: 80px;
       user-select: none;
     }
+  }
+}
+
+#InstructionsPopover {
+  z-index: 100;
+  box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%);
+  border-radius: 5px;
+  padding: 10px 10px 15px 15px; // TRBL
+  background-color: #202227;
+  border: 2px solid $unpinned-color;
+
+  position: absolute;
+  transform-origin: top right;
+  transition: transform $anim-time $curve 0ms, opacity $anim-time $curve 0ms, left $anim-time $curve 0ms,
+    top $anim-time $curve 0ms, border $anim-time;
+
+  &.pinned {
+    border: 2px solid $pinned-color;
   }
 }
