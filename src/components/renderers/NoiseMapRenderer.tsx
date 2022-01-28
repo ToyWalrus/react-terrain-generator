@@ -54,7 +54,6 @@ const NoiseMapRenderer = (props: INoiseMapRendererProps) => {
 const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const offscreenCanvas = useMemo(() => {
-    console.log('create canvas');
     return document.createElement('canvas');
   }, []);
 

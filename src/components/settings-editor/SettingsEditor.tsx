@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PlaneDrawerSettings from '../../util/PlaneDrawerSettings';
 import ValueEditor from '../value-editor/ValueEditor';
 import ArrowIcon from '@material-ui/icons/ChevronLeft';
@@ -29,6 +29,7 @@ interface ISettingsEditorProps {
 type SettingsProps = ICanvasSize & ISettingsEditorProps & Partial<ISettingsDrawerProps>;
 
 const SettingsEditor = (props: SettingsProps) => {
+  const closeButtonRef = useRef<HTMLElement | null>(null);
   const {
     settings,
     canvasWidth,
@@ -42,10 +43,24 @@ const SettingsEditor = (props: SettingsProps) => {
   } = useSettingsEditorContext(props);
 
   return (
-    <div className={classnames('settings-editor', props.className)}>
+    <div
+      className={classnames('settings-editor', props.className)}
+      onScroll={e => {
+        const el = closeButtonRef.current;
+        if (!el) return;
+
+        const scroll = e.currentTarget.scrollTop;
+        const scrolledClass = 'scrolled';
+        if (scroll >= 15 && !el.classList.contains(scrolledClass)) {
+          el.classList.add(scrolledClass);
+        } else if (scroll < 15) {
+          el.classList.remove(scrolledClass);
+        }
+      }}
+    >
       <div className="title-section">
         {props.onClose && (
-          <IconButton onClick={props.onClose} className="close-button">
+          <IconButton onClick={props.onClose} className="close-button" innerRef={closeButtonRef}>
             <ArrowIcon fontSize="large" />
           </IconButton>
         )}
@@ -177,10 +192,10 @@ const SettingsEditor = (props: SettingsProps) => {
       </div>
       <Spacer />
       <div className="buttons">
-        <input type="button" onClick={() => onRerenderTerrain(false)} value="Randomize Seed" />
+        <button onClick={() => onRerenderTerrain(false)}>Randomize Seed</button>
         <Spacer />
-        <input type="button" onClick={() => onSettingsChanged(defaultSettings)} value="Default Settings" />
-        <input type="button" onClick={() => onRerenderTerrain(true)} value="Apply" />
+        <button onClick={() => onSettingsChanged(defaultSettings)}>Default Settings</button>
+        <button onClick={() => onRerenderTerrain(true)}>Apply</button>
       </div>
     </div>
   );

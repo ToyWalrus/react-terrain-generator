@@ -6,6 +6,7 @@
   height: 100%;
   width: var(--settings-drawer-width);
   padding: 0 10px 10px;
+  overflow-y: scroll;
 
   & > div:not(div:last-child, :first-child, .spacer) {
     padding: 12px 0;
@@ -27,6 +28,11 @@
       position: absolute;
       left: 0;
       color: var(--text-color);
+      transition: background-color 200ms ease-in-out;
+
+      &.scrolled {
+        background-color: #59647e99;
+      }
     }
   }
 
@@ -54,6 +60,22 @@
 }
 
 .settings-editor .value-editor:not(.value-editor:last-child),
-.buttons > input:not(input:last-child) {
+.buttons > button:not(button:last-child) {
   margin-right: 8px;
+}
+
+.buttons > button {
+  cursor: pointer;
+  border: 1px solid #363636;
+  border-radius: 5px;
+  background-color: #59637e;
+  font-size: 1.125em;
+  padding: 5px 10px;
+  color: var(--text-color);
+
+  box-shadow: inset 0 0 14px 0 #484848, 0 0 24px -13px #000000;
+
+  &:hover {
+    background-color: #6c7692;
+  }
 }
