@@ -1,11 +1,12 @@
 #DetailLayers {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   row-gap: 16px;
   min-width: 28vw;
   opacity: 1;
-  transition: opacity 200ms ease-out;
+  transition: opacity 200ms ease-out, margin-left 100ms ease-in-out;
 
   &.hidden {
     opacity: 0;
@@ -35,13 +36,15 @@
   }
 
   .current-biome {
+    position: absolute;
     min-height: 1.5em;
+    bottom: -0.25em;
+    left: -475px;
   }
 }
 
 @media only screen and (max-width: 1100px) {
   #DetailLayers {
-    position: relative;
     flex-direction: row;
     margin-left: 8vw;
     column-gap: 30px;
@@ -69,6 +72,11 @@
     .current-biome {
       position: absolute;
       top: -2em;
+      left: auto;
     }
+  }
+
+  .settings-visible #DetailLayers {
+    margin-left: 0;
   }
 }
