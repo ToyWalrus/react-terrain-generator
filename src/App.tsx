@@ -61,7 +61,6 @@ const App = () => {
             terrainMap={terrainMap}
             settings={settings}
           />
-          {detailsVisible && <Spacer />}
           <DetailLayers open={detailsVisible} terrainMap={terrainMap} />
           {detailsVisible && <Spacer />}
         </div>

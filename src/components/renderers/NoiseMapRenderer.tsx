@@ -1,5 +1,7 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Color, Vector2 } from 'three';
+
+const WIDTH_CUTOFF = 1100;
 
 interface INoiseMapRendererProps {
   noiseMap: number[][];
@@ -39,19 +41,21 @@ const NoiseMapRenderer = (props: INoiseMapRendererProps) => {
         height={height}
         onMouseMove={onMouseMove}
         onMouseOut={() => props.updateCrosshairPosition(undefined)}
+        style={{ maxHeight: height, maxWidth: width }}
       >
         <p>Browser does not support this feature</p>
       </canvas>
       <div className="noise-map-details">
-        <span className="map-title">{props.mapTitle}</span>
-        <span className="focused-value">{hasFocusedValue && `Value: ${getFocusedValue()}`}</span>
-        <span className="focused-value">{hasFocusedValue && `Interpretation: ${getInterpretation()}`}</span>
+        <div className="map-title">{props.mapTitle}</div>
+        <div className="focused-value">{hasFocusedValue && `Value: ${getFocusedValue()}`}</div>
+        <div className="focused-value">{hasFocusedValue && `Interpretation: ${getInterpretation()}`}</div>
       </div>
     </div>
   );
 };
 
 const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
+  const [isAboveCutoffPosition, setAboveCutoffPosition] = useState(window.innerWidth > WIDTH_CUTOFF);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const offscreenCanvas = useMemo(() => {
     return document.createElement('canvas');
@@ -70,6 +74,17 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
     low: new Color(0, 0, 0),
     high: new Color(1, 1, 1),
   };
+
+  useEffect(() => {
+    const onResize = (e: UIEvent) => {
+      setAboveCutoffPosition(window.innerWidth > WIDTH_CUTOFF);
+    };
+
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
+  }, []);
 
   const crosshairSize = props.crosshairSize === undefined ? 5 : props.crosshairSize;
   const crosshairThickness = props.crosshairThickness === undefined ? 1 : props.crosshairThickness;
@@ -145,7 +160,7 @@ const useNoiseMapRendererHook = (props: INoiseMapRendererProps) => {
     }
 
     drawCrosshairs();
-  }, [canvasSize.width, canvasSize.height, props.noiseMap, props.gradientColors]);
+  }, [canvasSize.width, canvasSize.height, props.noiseMap, props.gradientColors, isAboveCutoffPosition]);
 
   // Draw crosshairs
   useEffect(drawCrosshairs, [props.crosshairPosition]);

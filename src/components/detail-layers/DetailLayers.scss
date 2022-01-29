@@ -20,19 +20,55 @@
       flex-direction: column;
       margin-left: 8px;
 
-
       .focused-value {
         font-weight: 300;
-        font-size: .8em;
+        font-size: 0.8em;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
   }
 
-  .map-title, .current-biome {
+  .map-title,
+  .current-biome {
     font-size: 1.2em;
   }
 
   .current-biome {
     min-height: 1.5em;
+  }
+}
+
+@media only screen and (max-width: 1100px) {
+  #DetailLayers {
+    position: relative;
+    flex-direction: row;
+    margin-left: 8vw;
+    column-gap: 30px;
+    width: 75%;
+
+    .noise-map {
+      flex-direction: column;
+      flex: 1;
+
+      .noise-map-details {
+        margin-left: 0;
+        align-items: flex-start;
+
+        .focused-value {
+          font-size: 1.75vw;
+          min-height: 1.5em;
+        }
+      }
+    }
+
+    .map-title {
+      font-size: 2.5vw;
+    }
+
+    .current-biome {
+      position: absolute;
+      top: -2em;
+    }
   }
 }

@@ -6,7 +6,13 @@
   height: 100%;
   width: var(--settings-drawer-width);
   padding: 0 10px 10px;
+
   overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   & > div:not(div:last-child, :first-child, .spacer) {
     padding: 12px 0;

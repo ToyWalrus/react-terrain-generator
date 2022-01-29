@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MouseLeft from './mouse-images/mouse-left-button.png';
 import MouseMiddle from './mouse-images/mouse-middle-button.png';
 import MouseRight from './mouse-images/mouse-right-button.png';
@@ -43,7 +43,20 @@ const InstructionsPopover = () => {
   const [isPinned, setPinned] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const popoverSizeNeedsSetting = popoverRect === null;
+  const anchorNeedsSetting = anchorRect === null;
+  const popoverNeedsSetting = popoverRect === null;
+
+  useEffect(() => {
+    const onResize = () => {
+      setAnchorRect(null);
+      setPopoverRect(null);
+    };
+
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
+  }, []);
 
   const closedStyle = {
     opacity: 0,
@@ -81,7 +94,7 @@ const InstructionsPopover = () => {
           if (!isPinned) setOpen(false);
         }}
         onClick={() => setPinned(p => !p)}
-        ref={setRectByRef(anchorRect === null, setAnchorRect)}
+        ref={setRectByRef(anchorNeedsSetting, setAnchorRect)}
       >
         <InfoIcon fontSize="large" />
       </div>
@@ -90,8 +103,8 @@ const InstructionsPopover = () => {
         className={classNames({
           pinned: isPinned,
         })}
-        ref={setRectByRef(popoverRect === null, setPopoverRect)}
-        style={popoverSizeNeedsSetting ? { top: -1000 } : open ? openStyle : closedStyle}
+        ref={setRectByRef(popoverNeedsSetting, setPopoverRect)}
+        style={popoverNeedsSetting ? { top: -1000 } : open ? openStyle : closedStyle}
       >
         <Instructions />
       </div>
