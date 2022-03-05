@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "webpack serve --mode development",
-    "build": "webpack",
+    "build": "webpack build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
