@@ -144,7 +144,7 @@ const useAppHook = () => {
   useEffect(() => {
     const getWords = async () => {
       try {
-        const pairCount = 10;
+        const pairCount = 3;
 
         const [nounResponse, adjectiveResponse] = await Promise.all([
           fetch(`https://random-word-form.herokuapp.com/random/noun?count=${pairCount}`),
